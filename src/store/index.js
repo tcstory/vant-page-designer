@@ -2,8 +2,6 @@ import Vue from 'vue'
 import { BehaviorSubject, Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
-import { getComponent } from '../registry'
-
 const store = {
   rootComp: null,
   selectedContainer: null
@@ -13,12 +11,14 @@ const component$ = new Subject()
 
 component$.subscribe(function (action) {
   if (action.type === 'SET_ROOT_COMP') {
-    store.rootComp = getComponent(action.payload)
+    store.rootComp = action.payload
+
     component$.next({
       type: 'CHANGE'
     })
   } else if (action.type === 'ADD') {
     store.rootComp.children.push(action.payload)
+
     component$.next({
       type: 'CHANGE'
     })

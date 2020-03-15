@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { createComponent } from '../registry'
+
 export default {
   name: 'Toolbar',
   data () {
@@ -29,7 +31,7 @@ export default {
     handleAdd (comp) {
       this.component$.next({
         type: 'ADD',
-        payload: comp
+        payload: createComponent(comp.id)
       })
     }
   },

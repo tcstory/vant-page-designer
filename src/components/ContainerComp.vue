@@ -5,18 +5,17 @@
 </template>
 
 <script>
+import { createCompInfo } from '../utils'
+
 import baseComp from '../mixin/baseComp'
 
-const compInfo = {
-  id: '',
+const compInfo = createCompInfo({
   version: 'latest',
-  name: 'Container',
+  name: 'ContainerComp',
   label: '容器',
   coverImg: '',
   children: []
-}
-
-compInfo.id = `${compInfo.name}-${compInfo.version}`
+})
 
 export default {
   name: compInfo.id,

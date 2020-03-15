@@ -13,10 +13,23 @@ for (const key of keys) {
   Vue.component(key, store[key])
 }
 
-export function getComponent (key) {
-  return {
-    ...store[key].compInfo
+export function createComponent (key) {
+  const compInfo = store[key].compInfo
+  const ret = {}
+  const keys = Object.keys(compInfo)
+
+  for (const key of keys) {
+    const value = key === 'children' ? [] : compInfo[key]
+
+    Object.defineProperty(ret, key, {
+      value,
+      configurable: key === 'children',
+      enumerable: true,
+      writable: true
+    })
   }
+
+  return ret
 }
 
 export function getComponents () {
@@ -26,7 +39,5 @@ export function getComponents () {
     }
   })
 }
-
-Vue.prototype.getComponent = getComponent
 
 Vue.prototype.getComponents = getComponents

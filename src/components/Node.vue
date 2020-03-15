@@ -1,5 +1,5 @@
 <template>
-    <div class="node m-1" :class="{'is-container': isContainer, 'is-selected': isSelected}" @click.stop="handleSelect">
+    <div class="node m-2" :class="{'is-container': isContainer, 'is-selected': isSelected}" @click.stop="handleSelect">
       <div class="tool-row bg-secondary pt-1 pb-1" v-if="!isContainer">
         <p class="mb-0 ml-1 h6">{{compName}}</p>
         <div class="btn-wrap mr-1">
@@ -9,24 +9,25 @@
       </div>
 
       <template v-if="isContainer">
-        <component v-if="compId" v-bind:is="compId">
-          <node v-for="item in children" :key="item._createdTime" :compId="item.id"/>
+        <component v-if="comp" v-bind:is="comp.id">
+          <node v-for="item in comp.children" :key="item._createdTime" :comp="item"/>
         </component>
       </template>
-      <component v-else v-bind:is="compId"/>
+      <component v-else v-bind:is="comp.id"/>
     </div>
 </template>
 
 <script>
 import baseNode from '../mixin/baseNode'
+import ContainerComp from './ContainerComp'
 
 export default {
   name: 'Node',
   mixins: [baseNode],
   props: {
-    compId: {
-      type: String,
-      default: ''
+    comp: {
+      type: Object,
+      default: null
     }
   },
   data () {
@@ -37,10 +38,10 @@ export default {
   },
   computed: {
     isContainer () {
-      return this.getComponent(this.compId).name === 'Container'
+      return this.comp.name === ContainerComp.compInfo.name
     },
     compName () {
-      return this.getComponent(this.compId).name
+      return this.comp.name
     }
   },
   methods: {
@@ -51,14 +52,16 @@ export default {
     }
   },
   created () {
+    this.comp.vm = this
+
     this.selectedContainer$.onChange((value) => {
       this.isSelected = value === this._createdTime
     })
 
-    this.component$.onChange('ADD', (value) => {
-      this.children = value.children
-      console.log('children', this.children)
-    })
+    // this.component$.onChange('ADD', (value) => {
+    //   this.children = value.children
+    //   console.log('children', this.children)
+    // })
   }
 }
 </script>
@@ -68,15 +71,15 @@ export default {
 
   .node {
     min-height: 64px;
-  }
+    outline: 2px solid $secondary-color;
 
-  .is-selected {
-    outline: 2px solid $primary-color;
+    &.is-selected {
+      outline: 2px solid $primary-color;
+    }
   }
 
   .is-container {
     flex: 1;
-    width: 100%;
   }
 
   .tool-row {

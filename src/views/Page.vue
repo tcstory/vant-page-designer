@@ -1,10 +1,11 @@
 <template>
   <article>
-    <node :compId="compId"/>
+    <node :comp="comp"/>
   </article>
 </template>
 
 <script>
+import { createComponent } from '../registry'
 import Node from '../components/Node'
 import ContainerComp from '../components/ContainerComp'
 
@@ -15,14 +16,22 @@ export default {
   },
   data () {
     return {
-      compId: ContainerComp.compInfo.id
+      comp: createComponent(ContainerComp.compInfo.id)
+    }
+  },
+  methods: {
+    setAsDefaultSelected () {
+      this.selectedContainer$.next({ type: 'SET', payload: this.comp.vm._createdTime })
     }
   },
   created () {
     this.component$.next({
       type: 'SET_ROOT_COMP',
-      payload: ContainerComp.compInfo.id
+      payload: this.comp
     })
+  },
+  mounted () {
+    this.setAsDefaultSelected()
   }
 }
 </script>

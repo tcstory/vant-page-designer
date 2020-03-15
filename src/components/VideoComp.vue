@@ -13,17 +13,15 @@
 </template>
 
 <script>
+import { createCompInfo } from '../utils'
 import baseComp from '../mixin/baseComp'
 
-const compInfo = {
-  id: '',
+const compInfo = createCompInfo({
   version: 'latest',
-  name: 'Video',
+  name: 'VideoComp',
   label: '视频',
   coverImg: require('../assets/bilibili.svg')
-}
-
-compInfo.id = `${compInfo.name}-${compInfo.version}`
+})
 
 export default {
   name: compInfo.id,
