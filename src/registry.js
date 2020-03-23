@@ -1,9 +1,7 @@
 import Vue from 'vue'
-import VideoComp from './components/VideoComp'
 import ContainerComp from './components/ContainerComp'
 
 const store = {
-  [VideoComp.compInfo.id]: VideoComp,
   [ContainerComp.compInfo.id]: ContainerComp
 }
 
@@ -15,7 +13,9 @@ for (const key of keys) {
 
 export function createComponent (key) {
   const compInfo = store[key].compInfo
-  const ret = {}
+  const ret = {
+    objectId: Date.now()
+  }
   const keys = Object.keys(compInfo)
 
   for (const key of keys) {

@@ -21,7 +21,7 @@ export default {
   },
   methods: {
     setAsDefaultSelected () {
-      this.selectedContainer$.next({ type: 'SET', payload: this.comp.vm._createdTime })
+      this.selectedContainer$.next({ type: 'SET', payload: this.comp })
     }
   },
   created () {

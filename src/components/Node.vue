@@ -48,14 +48,14 @@ export default {
     handleDelete () {
     },
     handleSelect () {
-      this.selectedContainer$.next({ type: 'SET', payload: this._createdTime })
+      this.selectedContainer$.next({ type: 'SET', payload: this.comp })
     }
   },
   created () {
     this.comp.vm = this
 
     this.selectedContainer$.onChange((value) => {
-      this.isSelected = value === this._createdTime
+      this.isSelected = value === this.comp
     })
 
     // this.component$.onChange('ADD', (value) => {

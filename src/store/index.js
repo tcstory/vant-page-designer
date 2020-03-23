@@ -17,7 +17,7 @@ component$.subscribe(function (action) {
       type: 'CHANGE'
     })
   } else if (action.type === 'ADD') {
-    store.rootComp.children.push(action.payload)
+    store.selectedContainer.children.push(action.payload)
 
     component$.next({
       type: 'CHANGE'
