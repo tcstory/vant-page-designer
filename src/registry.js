@@ -1,25 +1,33 @@
 import Vue from 'vue'
-import ContainerComp from './components/ContainerComp'
+import Container from './widgets/Container.js'
+import install from './installVan'
 
 const store = {
-  [ContainerComp.compInfo.id]: ContainerComp
+  [Container.info.id]: Container
 }
 
-const keys = Object.keys(store)
+let keys = Object.keys(store)
 
 for (const key of keys) {
-  Vue.component(key, store[key])
+  Vue.component(key, store[key].component)
 }
 
-export function createComponent (key) {
-  const compInfo = store[key].compInfo
+Object.assign(store, install())
+
+keys = Object.keys(store)
+
+export function createInstance (key) {
+  const compInfo = store[key].info
+
   const ret = {
-    objectId: Date.now()
+    objectId: Date.now(),
+    ...compInfo
   }
-  const keys = Object.keys(compInfo)
+
+  const keys = Object.keys(ret)
 
   for (const key of keys) {
-    const value = key === 'children' ? [] : compInfo[key]
+    const value = key === 'children' ? [] : ret[key]
 
     Object.defineProperty(ret, key, {
       value,
@@ -35,7 +43,7 @@ export function createComponent (key) {
 export function getComponents () {
   return keys.map(function (key) {
     return {
-      ...store[key].compInfo
+      ...store[key].info
     }
   })
 }

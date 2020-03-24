@@ -19,7 +19,7 @@
 
 <script>
 import baseNode from '../mixin/baseNode'
-import ContainerComp from './ContainerComp'
+import Container from '../widgets/Container.js'
 
 export default {
   name: 'Node',
@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     isContainer () {
-      return this.comp.name === ContainerComp.compInfo.name
+      return this.comp.name === Container.info.name
     },
     compName () {
       return this.comp.name

@@ -5,9 +5,9 @@
 </template>
 
 <script>
-import { createComponent } from '../registry'
+import { createInstance } from '../registry'
 import Node from '../components/Node'
-import ContainerComp from '../components/ContainerComp'
+import Container from '../widgets/Container.js'
 
 export default {
   name: 'Page',
@@ -16,7 +16,7 @@ export default {
   },
   data () {
     return {
-      comp: createComponent(ContainerComp.compInfo.id)
+      comp: createInstance(Container.info.id)
     }
   },
   methods: {

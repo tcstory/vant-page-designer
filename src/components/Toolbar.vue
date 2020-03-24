@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { createComponent } from '../registry'
+import { createInstance } from '../registry'
 
 export default {
   name: 'Toolbar',
@@ -31,12 +31,13 @@ export default {
     handleAdd (comp) {
       this.component$.next({
         type: 'ADD',
-        payload: createComponent(comp.id)
+        payload: createInstance(comp.id)
       })
     }
   },
   created () {
     this.componentList = this.getComponents()
+    console.log('this.componentList', this.componentList)
   }
 }
 </script>
