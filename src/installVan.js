@@ -5,9 +5,10 @@ import VanButton from './widgets/VanButton'
 export default function install () {
   const ret = {}
 
-  Vue.component(VanButton.info.id, VanButton.component)
+  const name = VanButton.component.name
+  Vue.component(name, VanButton.component)
 
-  ret[VanButton.info.id] = VanButton
+  ret[name] = VanButton
 
   return ret
 }

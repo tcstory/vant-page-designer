@@ -7,7 +7,7 @@
     </header>
     <main id="stage">
       <toolbar/>
-      <router-view id="inner-stage"/>
+      <router-view/>
     </main>
   </div>
 </template>
@@ -49,11 +49,6 @@ $nav-height: 44px;
 
 #stage {
   height: calc(100% - #{$nav-height});
-  display: flex;
-}
-
-#inner-stage {
-  flex-grow: 1;
   display: flex;
 }
 

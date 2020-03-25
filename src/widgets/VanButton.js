@@ -4,10 +4,12 @@ import { createCompInfo } from '../utils'
 
 const info = createCompInfo({
   version: 'latest',
-  name: 'VanButton',
+  name: VanButton.name,
   label: '按钮',
   coverImg: ''
 })
+
+info.id = info.name
 
 export default {
   info,

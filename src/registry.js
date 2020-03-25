@@ -16,12 +16,10 @@ Object.assign(store, install())
 
 keys = Object.keys(store)
 
-export function createInstance (key) {
-  const compInfo = store[key].info
-
+function freeze (info) {
   const ret = {
     objectId: Date.now(),
-    ...compInfo
+    ...info
   }
 
   const keys = Object.keys(ret)
@@ -40,11 +38,15 @@ export function createInstance (key) {
   return ret
 }
 
+export function createInstance (key) {
+  return freeze(store[key].info)
+}
+
 export function getComponents () {
   return keys.map(function (key) {
-    return {
+    return freeze({
       ...store[key].info
-    }
+    })
   })
 }
 

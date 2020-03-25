@@ -1,25 +1,22 @@
 <template>
-    <div class="node m-2" :class="{'is-container': isContainer, 'is-selected': isSelected}" @click.stop="handleSelect">
-      <div class="tool-row bg-secondary pt-1 pb-1" v-if="!isContainer">
-        <p class="mb-0 ml-1 h6">{{compName}}</p>
-        <div class="btn-wrap mr-1">
-          <button class="btn btn-sm btn-primary mr-1"><i class="icon icon-menu"></i></button>
-          <button class="btn btn-sm btn-error" @click="handleDelete"><i class="icon icon-delete"></i></button>
-        </div>
-      </div>
-
+    <div class="node p-1" :class="{
+      'is-container': isContainer,
+      'is-selected': isSelected,
+      'no-children': !hasChildren
+    }" @click.stop="handleSelect">
       <template v-if="isContainer">
         <component v-if="comp" v-bind:is="comp.id">
           <node v-for="item in comp.children" :key="item._createdTime" :comp="item"/>
         </component>
       </template>
-      <component v-else v-bind:is="comp.id"/>
+      <component v-else v-bind:is="comp.id" v-bind="tmp" />
     </div>
 </template>
 
 <script>
 import baseNode from '../mixin/baseNode'
 import Container from '../widgets/Container.js'
+import { filter } from 'rxjs/operators'
 
 export default {
   name: 'Node',
@@ -33,35 +30,42 @@ export default {
   data () {
     return {
       children: [],
-      isSelected: false
+      isSelected: false,
+      tmp: {
+        text: 'ok',
+        type: 'info',
+        'loading-text': '加载中...',
+        loading: true
+      }
     }
   },
   computed: {
     isContainer () {
       return this.comp.name === Container.info.name
     },
-    compName () {
-      return this.comp.name
+    hasChildren () {
+      if (this.isContainer) {
+        return this.comp.children.length !== 0
+      } else {
+        return false
+      }
     }
   },
   methods: {
     handleDelete () {
     },
     handleSelect () {
-      this.selectedContainer$.next({ type: 'SET', payload: this.comp })
+      this.selectedNode$.next({ type: 'SET', payload: this.comp })
     }
   },
   created () {
     this.comp.vm = this
 
-    this.selectedContainer$.onChange((value) => {
-      this.isSelected = value === this.comp
+    this.selectedNode$.pipe(
+      filter(action => action.type === 'CHANGE')
+    ).subscribe((action) => {
+      this.isSelected = action.payload === this.comp
     })
-
-    // this.component$.onChange('ADD', (value) => {
-    //   this.children = value.children
-    //   console.log('children', this.children)
-    // })
   }
 }
 </script>
@@ -70,24 +74,19 @@ export default {
   @import "node_modules/spectre.css/src/variables";
 
   .node {
-    min-height: 64px;
     outline: 2px solid $secondary-color;
 
     &.is-selected {
       outline: 2px solid $primary-color;
+      z-index: 10;
     }
   }
 
   .is-container {
     flex: 1;
-  }
 
-  .tool-row {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .btn {
+    &.no-children {
+      min-height: 64px;
+    }
   }
 </style>

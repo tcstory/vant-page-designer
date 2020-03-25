@@ -1,23 +1,21 @@
 import Vue from 'vue'
-import { BehaviorSubject, Subject } from 'rxjs'
+import { Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
 const store = {
   rootComp: null,
-  selectedContainer: null
+  selectedNode: null
 }
 
 const component$ = new Subject()
 
 component$.subscribe(function (action) {
-  if (action.type === 'SET_ROOT_COMP') {
-    store.rootComp = action.payload
-
-    component$.next({
-      type: 'CHANGE'
-    })
-  } else if (action.type === 'ADD') {
-    store.selectedContainer.children.push(action.payload)
+  if (action.type === 'ADD') {
+    if (store.rootComp === null) {
+      store.rootComp = action.payload
+    } else {
+      store.selectedNode.children.push(action.payload)
+    }
 
     component$.next({
       type: 'CHANGE'
@@ -49,27 +47,17 @@ component$.onChange = function onChange (type, cb) {
 
 Vue.prototype.component$ = component$
 
-const selectedContainer$ = new BehaviorSubject({ type: 'SET', payload: null })
+const selectedNode$ = new Subject()
 
-selectedContainer$
-  .pipe(filter(action => action.payload !== store.selectedContainer))
+selectedNode$
+  .pipe(filter(action => action.payload !== store.selectedNode$))
   .subscribe(function (action) {
     if (action.type === 'SET') {
-      store.selectedContainer = action.payload
-      selectedContainer$.next({ type: 'CHANGE', payload: null })
-    } else {
-    // nothing
-    }
-  })
-
-selectedContainer$.onChange = function (cb) {
-  selectedContainer$.subscribe(function (action) {
-    if (action.type === 'CHANGE') {
-      cb(store.selectedContainer)
+      store.selectedNode = action.payload
+      selectedNode$.next({ type: 'CHANGE', payload: store.selectedNode })
     } else {
       // nothing
     }
   })
-}
 
-Vue.prototype.selectedContainer$ = selectedContainer$
+Vue.prototype.selectedNode$ = selectedNode$
