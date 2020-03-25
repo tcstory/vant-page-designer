@@ -14,7 +14,9 @@ component$.subscribe(function (action) {
     if (store.rootComp === null) {
       store.rootComp = action.payload
     } else {
-      store.selectedNode.children.push(action.payload)
+      if (store.selectedNode.children) {
+        store.selectedNode.children.push(action.payload)
+      }
     }
 
     component$.next({

@@ -9,7 +9,7 @@
           <node v-for="item in comp.children" :key="item._createdTime" :comp="item"/>
         </component>
       </template>
-      <component v-else v-bind:is="comp.id" v-bind="tmp" />
+      <component v-else v-bind:is="comp.id" />
     </div>
 </template>
 
@@ -30,13 +30,7 @@ export default {
   data () {
     return {
       children: [],
-      isSelected: false,
-      tmp: {
-        text: 'ok',
-        type: 'info',
-        'loading-text': '加载中...',
-        loading: true
-      }
+      isSelected: false
     }
   },
   computed: {
