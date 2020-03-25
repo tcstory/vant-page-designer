@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { createInstance } from '../registry'
+import defaultWidget from '../defaultWidget'
 import Node from '../components/Node'
 import Container from '../widgets/Container.js'
 
@@ -18,7 +18,7 @@ export default {
   },
   data () {
     return {
-      comp: createInstance(Container.info.id)
+      comp: defaultWidget.createInstance(Container.info.id)
     }
   },
   methods: {

@@ -1,43 +1,61 @@
 <template>
   <div class="tool bg-gray p-2">
-    <div class="card c-hand mr-2" v-for="comp in componentList" :key="comp.id">
-      <div class="card-title h6 text-center">
-        {{ comp.label }}
-      </div>
-      <div class="card-image" :style="{backgroundImage: `url(${comp.coverImg})`}"></div>
-      <div class="card-footer p-1">
-        <div class="btn-group btn-group-block">
-          <button class="btn btn-primary btn-sm" @click="handleAdd(comp)">
-            <i class="icon icon-plus"></i>
-          </button>
-          <button class="btn btn-sm">详情</button>
-        </div>
-      </div>
-    </div>
+    <ul class="tab tab-block">
+      <li class="tab-item" :class="{active: this.selectedTab === 0}" >
+        <a @click.prevent="handleChangeTab(0)">基础组件</a>
+      </li>
+      <li class="tab-item" :class="{active: this.selectedTab === 1}">
+        <a @click.prevent="handleChangeTab(1)">VANT UI</a>
+      </li>
+    </ul>
+    <ul class="menu" v-if="this.selectedTab === 0">
+      <li class="divider" data-content="基础组件"></li>
+      <li class="menu-item" v-for="comp in defaultComponentList" :key="comp.objectId" @click="handleAddDefaultWidget(comp)">
+        <a>{{`${comp.name} ${comp.label}`}}</a>
+      </li>
+    </ul>
+    <ul class="menu" v-if="this.selectedTab === 1">
+      <li class="divider" data-content="基础组件"></li>
+      <li class="menu-item" v-for="comp in vantComponentList" :key="comp.objectId" @click="handleAddVantWidget(comp)">
+        <a>{{`${comp.name} ${comp.label}`}}</a>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import { createInstance } from '../registry'
+import defaultWidget from '../defaultWidget'
+import vantWidget from '../vantWidget'
 
 export default {
   name: 'Toolbar',
   data () {
     return {
-      componentList: []
+      defaultComponentList: [],
+      vantComponentList: [],
+      selectedTab: 0
     }
   },
   methods: {
-    handleAdd (comp) {
+    handleChangeTab (val) {
+      this.selectedTab = val
+    },
+    handleAddDefaultWidget (comp) {
       this.component$.next({
         type: 'ADD',
-        payload: createInstance(comp.id)
+        payload: defaultWidget.createInstance(comp.id)
+      })
+    },
+    handleAddVantWidget (comp) {
+      this.component$.next({
+        type: 'ADD',
+        payload: vantWidget.createInstance(comp.id)
       })
     }
   },
   created () {
-    this.componentList = this.getComponents()
-    console.log('this.componentList', this.componentList)
+    this.vantComponentList = vantWidget.getComponents()
+    this.defaultComponentList = defaultWidget.getComponents()
   }
 }
 </script>

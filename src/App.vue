@@ -13,9 +13,13 @@
 </template>
 
 <script>
-import './registry.js'
+import defaultWidget from './defaultWidget.js'
+import vantWidget from './vantWidget'
 
 import Toolbar from './components/Toolbar'
+
+defaultWidget.install()
+vantWidget.install()
 
 require('spectre.css/dist/spectre-icons.min.css')
 
