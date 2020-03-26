@@ -13,10 +13,10 @@
 </template>
 
 <script>
-import defaultWidget from './defaultWidget.js'
-import vantWidget from './vantWidget'
+import defaultWidget from '@/defaultWidget.js'
+import vantWidget from '@/vantWidget'
 
-import Toolbar from './components/Toolbar'
+import Toolbar from '@/components/Toolbar'
 
 defaultWidget.install()
 vantWidget.install()
