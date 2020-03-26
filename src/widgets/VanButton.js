@@ -13,5 +13,10 @@ info.id = info.name
 
 export default {
   info,
-  component: VanButton
+  component: VanButton,
+  getDefaultPropsValue () {
+    return {
+      text: '按钮'
+    }
+  }
 }

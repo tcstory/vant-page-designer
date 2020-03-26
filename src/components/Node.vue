@@ -9,7 +9,7 @@
           <node v-for="item in comp.children" :key="item._createdTime" :comp="item"/>
         </component>
       </template>
-      <component v-else v-bind:is="comp.id" />
+      <component v-else v-bind:is="comp.id" v-bind="getPropsValue"/>
     </div>
 </template>
 
@@ -30,10 +30,19 @@ export default {
   data () {
     return {
       children: [],
-      isSelected: false
+      isSelected: false,
+      tmp: {
+        text: 'ok',
+        type: 'info',
+        'loading-text': '加载中...',
+        loading: true
+      }
     }
   },
   computed: {
+    getPropsValue () {
+      return this.comp.propsValue
+    },
     isContainer () {
       return this.comp.name === Container.info.name
     },

@@ -27,7 +27,7 @@ export default {
     }
   },
   created () {
-    this.component$.next({
+    this.node$.next({
       type: 'ADD',
       payload: this.comp
     })

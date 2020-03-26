@@ -7,9 +7,9 @@ const store = {
   selectedNode: null
 }
 
-const component$ = new Subject()
+const node$ = new Subject()
 
-component$.subscribe(function (action) {
+node$.subscribe(function (action) {
   if (action.type === 'ADD') {
     if (store.rootComp === null) {
       store.rootComp = action.payload
@@ -19,7 +19,7 @@ component$.subscribe(function (action) {
       }
     }
 
-    component$.next({
+    node$.next({
       type: 'CHANGE'
     })
   } else if (action.type === 'DELETE') {
@@ -28,7 +28,7 @@ component$.subscribe(function (action) {
 
       if (comp._createdTime === action.payload._createdTime) {
         store.rootComp.children.splice(i, 1)
-        component$.next({
+        node$.next({
           type: 'CHANGE'
         })
         break
@@ -39,15 +39,15 @@ component$.subscribe(function (action) {
   }
 })
 
-component$.onChange = function onChange (type, cb) {
-  component$.subscribe(function (action) {
+node$.onChange = function onChange (type, cb) {
+  node$.subscribe(function (action) {
     if (action.type === 'CHANGE') {
       cb(store.rootComp)
     }
   })
 }
 
-Vue.prototype.component$ = component$
+Vue.prototype.node$ = node$
 
 const selectedNode$ = new Subject()
 

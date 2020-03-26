@@ -41,15 +41,17 @@ export default {
       this.selectedTab = val
     },
     handleAddDefaultWidget (comp) {
-      this.component$.next({
+      this.node$.next({
         type: 'ADD',
         payload: defaultWidget.createInstance(comp.id)
       })
     },
     handleAddVantWidget (comp) {
-      this.component$.next({
+      const instance = vantWidget.createInstance(comp.id)
+
+      this.node$.next({
         type: 'ADD',
-        payload: vantWidget.createInstance(comp.id)
+        payload: instance
       })
     }
   },
