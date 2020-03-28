@@ -22,6 +22,7 @@ vantWidget.install()
 const node$ = new Subject()
 
 Vue.prototype.node$ = node$
+Vue.prototype.q = q
 
 export default {
   name: 'App',
@@ -31,7 +32,8 @@ export default {
   data () {
     return {
       node: null,
-      selectedNode: null
+      selectedNode: null,
+      selectedContainer: null
     }
   },
   methods: {
@@ -41,10 +43,6 @@ export default {
     setRootNode (node) {
       this.nodeMap[node.objectId] = node
       this.node = node
-    },
-    setAsDefaultSelected () {
-      this.selectedNode = this.node
-      q.sendMsg('SET_SELECTED.request', this.selectedNode.objectId)
     }
   },
   created () {
@@ -57,10 +55,11 @@ export default {
 
         if (this.node === null) {
           this.setRootNode(msg.payload)
-          this.setAsDefaultSelected()
+          q.sendMsg('SET_SELECTED.request', this.node.objectId)
+          q.sendMsg('SET_CONTAINER.request', this.node.objectId)
         } else {
-          if (this.selectedNode.children) {
-            this.selectedNode.children.push(msg.payload)
+          if (this.selectedContainer.children) {
+            this.selectedContainer.children.push(msg.payload)
           }
         }
       } else if (msg.type === 'SET_SELECTED.order') {
@@ -69,29 +68,12 @@ export default {
           type: 'SET_SELECTED.order',
           payload: this.selectedNode
         })
-      }
-    })
-
-    this.node$.subscribe((action) => {
-      if (action.type === 'SET_SELECTED.request') {
-        q.sendMsg('SET_SELECTED.request', action.payload.objectId)
-      }
-
-      if (action.type === 'ADD') {
-        // q.sendMsg('ADD.order', action.payload)
-        //
-        // if (this.node === null) {
-        //   this.node = action.payload
-        // } else {
-        //   if (this.selectedNode.children) {
-        //     this.selectedNode.children.push(action.payload)
-        //   }
-        // }
-      } else if (action.type === 'SET_SELECTED') {
-        this.selectedNode = this.nodeMap[action.payload]
-        q.sendMsg('SET_SELECTED.request', this.selectedNode.objectId)
-      } else {
-        // nothing
+      } else if (msg.type === 'SET_CONTAINER.order') {
+        this.selectedContainer = this.nodeMap[msg.payload]
+      } else if (msg.type === 'UPDATE_PROP_VALUE.order') {
+        const { objectId, key, value } = msg.payload
+        const node = this.nodeMap[objectId]
+        node.propsValue[key] = value
       }
     })
   },

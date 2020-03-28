@@ -25,7 +25,8 @@ function install () {
 
 function createInstance (key) {
   const obj = freeze(store[key].info)
-  obj.propsValue = getPropsValue(store[key])
+  obj.propsValue = store[key].getDefaultPropsValue()
+  obj.propsKey = Object.freeze(store[key].getPropsKey())
 
   return obj
 }
@@ -36,10 +37,6 @@ function getComponents () {
       ...store[key].info
     })
   })
-}
-
-function getPropsValue (obj) {
-  return obj.getDefaultPropsValue()
 }
 
 export default {

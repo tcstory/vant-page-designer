@@ -52,7 +52,10 @@ export default {
     handleDelete () {
     },
     handleSelect () {
-      this.node$.next({ type: 'SET_SELECTED.request', payload: this.node })
+      this.q.sendMsg('SET_SELECTED.request', this.node.objectId)
+      if (this.isContainer) {
+        this.q.sendMsg('SET_CONTAINER.request', this.node.objectId)
+      }
     }
   },
   created () {

@@ -18,5 +18,10 @@ export default {
     return {
       text: '按钮'
     }
+  },
+  getPropsKey () {
+    return [
+      { key: 'text', type: 'string', label: '文字' }
+    ]
   }
 }

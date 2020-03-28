@@ -20,5 +20,12 @@ export default {
       width: '100',
       height: '100'
     }
+  },
+  getPropsKey () {
+    return [
+      { key: 'src', type: 'image', label: '图片' },
+      { key: 'width', type: 'string', label: '宽度' },
+      { key: 'height', type: 'string', label: '高度' }
+    ]
   }
 }

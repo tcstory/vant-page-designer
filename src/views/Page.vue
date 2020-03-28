@@ -9,6 +9,7 @@ import defaultWidget from '../defaultWidget'
 import Container from '../widgets/Container.js'
 
 import Queue from '../queue'
+import { filter, debounceTime } from 'rxjs/operators'
 const q = new Queue()
 
 export default {
@@ -16,7 +17,8 @@ export default {
   data () {
     return {
       node: null,
-      selectedNode: null
+      selectedNode: null,
+      selectedContainer: null
     }
   },
   methods: {
@@ -40,31 +42,41 @@ export default {
 
     q.subscribe((msg) => {
       if (msg.type === 'SET_SELECTED.request') {
+        this.selectedNode = this.nodeMap[msg.payload]
         this.node$.next({
-          type: 'SET_SELECTED.request',
-          payload: msg.payload
+          type: 'EDIT',
+          payload: this.selectedNode
         })
+        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
+      } else if (msg.type === 'SET_CONTAINER.request') {
+        this.selectedContainer = this.nodeMap[msg.payload]
+        q.sendMsg('SET_CONTAINER.order', this.selectedContainer.objectId)
       }
     })
 
     this.node$.subscribe((action) => {
       if (action.type === 'ADD') {
         this.nodeMap[action.payload.objectId] = action.payload
-        q.sendMsg('ADD.order', action.payload)
 
         if (this.node === null) {
+          q.sendMsg('ADD.order', action.payload)
           this.node = action.payload
         } else {
-          if (this.selectedNode.children) {
-            this.selectedNode.children.push(action.payload)
+          if (this.selectedContainer.children) {
+            this.selectedContainer.children.push(action.payload)
+            q.sendMsg('ADD.order', action.payload)
           }
         }
-      } else if (action.type === 'SET_SELECTED.request') {
-        this.selectedNode = this.nodeMap[action.payload]
-        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
       } else {
         // nothing
       }
+    })
+
+    this.node$.pipe(
+      filter(action => action.type === 'UPDATE_PROP_VALUE'),
+      debounceTime(150)
+    ).subscribe((action) => {
+      q.sendMsg('UPDATE_PROP_VALUE.order', action.payload)
     })
   },
   mounted () {
