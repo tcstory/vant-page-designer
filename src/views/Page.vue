@@ -1,39 +1,80 @@
 <template>
   <article class="iphone-wrap">
-    <div id="iphone">
-      <node :comp="comp" v-bind:style="{'width': '100%', 'height': '100%'}"/>
-    </div>
+    <iframe src="//localhost:8080/demo" id="iphone" ref="receiver" frameborder="0"></iframe>
   </article>
 </template>
 
 <script>
 import defaultWidget from '../defaultWidget'
-import Node from '../components/Node'
 import Container from '../widgets/Container.js'
+
+import Queue from '../queue'
+const q = new Queue()
 
 export default {
   name: 'Page',
-  components: {
-    Node
-  },
   data () {
     return {
-      comp: defaultWidget.createInstance(Container.info.id)
+      node: null,
+      selectedNode: null
     }
   },
   methods: {
-    setAsDefaultSelected () {
-      this.selectedNode$.next({ type: 'SET', payload: this.comp })
+    createInstance (id) {
+      const node = defaultWidget.createInstance(id)
+
+      this.nodeMap[node.objectId] = node
+      return node
+    },
+    setReceiver () {
+      q.setReceiver(this.$refs.receiver.contentWindow)
+    },
+    setRootNode () {
+      this.node$.next({
+        type: 'ADD',
+        payload: this.createInstance(Container.info.id)
+      })
+    },
+    initNodeMap () {
+      this.nodeMap = {}
     }
   },
   created () {
-    this.node$.next({
-      type: 'ADD',
-      payload: this.comp
+    this.initNodeMap()
+
+    q.subscribe((msg) => {
+      if (msg.type === 'SET_SELECTED.request') {
+        this.node$.next({
+          type: 'SET_SELECTED',
+          payload: msg.payload
+        })
+      }
+    })
+
+    this.node$.subscribe((action) => {
+      if (action.type === 'ADD') {
+        q.sendMsg('ADD.order', action.payload)
+
+        if (this.node === null) {
+          this.node = action.payload
+        } else {
+          if (this.selectedNode.children) {
+            this.selectedNode.children.push(action.payload)
+          }
+        }
+      } else if (action.type === 'SET_SELECTED') {
+        this.selectedNode = this.nodeMap[action.payload]
+        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
+      } else {
+        // nothing
+      }
     })
   },
   mounted () {
-    this.setAsDefaultSelected()
+    this.$refs.receiver.onload = () => {
+      this.setReceiver()
+      this.setRootNode()
+    }
   }
 }
 </script>
@@ -49,9 +90,7 @@ export default {
   #iphone {
     width: 375px;
     height: 667px;
-    /*contain: strict;*/
-    will-change: transform;
     margin: 20px auto 0;
-    background-color: white;
+    display: block;
   }
 </style>

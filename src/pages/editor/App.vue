@@ -13,15 +13,22 @@
 </template>
 
 <script>
+import Vue from 'vue'
+
 import defaultWidget from '@/defaultWidget.js'
 import vantWidget from '@/vantWidget'
 
 import Toolbar from '@/components/Toolbar'
+import { Subject } from 'rxjs'
 
 defaultWidget.install()
 vantWidget.install()
 
 require('spectre.css/dist/spectre-icons.min.css')
+
+const node$ = new Subject()
+
+Vue.prototype.node$ = node$
 
 export default {
   name: 'App',

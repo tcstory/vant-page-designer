@@ -2,15 +2,36 @@ import Vue from 'vue'
 import { Subject } from 'rxjs'
 import { filter } from 'rxjs/operators'
 
+import Queue from '../queue'
+
+const q = new Queue()
+
 const store = {
   rootComp: null,
-  selectedNode: null
+  selectedNode: null,
+  receiver: null
 }
+
+const message$ = new Subject()
+
+message$.subscribe(function (action) {
+  if (action.type === 'SET_RECEIVER') {
+    store.receiver = action.payload
+    q.setReceiver(action.payload)
+
+    message$.next({
+      type: 'CHANGE'
+    })
+  }
+})
+
+Vue.prototype.message$ = message$
 
 const node$ = new Subject()
 
 node$.subscribe(function (action) {
   if (action.type === 'ADD') {
+    q.sendMsg(action.type)
     if (store.rootComp === null) {
       store.rootComp = action.payload
     } else {
@@ -38,14 +59,6 @@ node$.subscribe(function (action) {
     // nothing
   }
 })
-
-node$.onChange = function onChange (type, cb) {
-  node$.subscribe(function (action) {
-    if (action.type === 'CHANGE') {
-      cb(store.rootComp)
-    }
-  })
-}
 
 Vue.prototype.node$ = node$
 

@@ -47,11 +47,9 @@ export default {
       })
     },
     handleAddVantWidget (comp) {
-      const instance = vantWidget.createInstance(comp.id)
-
       this.node$.next({
         type: 'ADD',
-        payload: instance
+        payload: vantWidget.createInstance(comp.id)
       })
     }
   },

@@ -5,11 +5,11 @@
       'no-children': !hasChildren
     }" @click.stop="handleSelect">
       <template v-if="isContainer">
-        <component v-if="comp" v-bind:is="comp.id">
-          <node v-for="item in comp.children" :key="item._createdTime" :comp="item"/>
+        <component v-if="node" v-bind:is="node.id">
+          <node v-for="item in node.children" :key="item._createdTime" :node="item"/>
         </component>
       </template>
-      <component v-else v-bind:is="comp.id" v-bind="getPropsValue"/>
+      <component v-else v-bind:is="node.id" v-bind="getPropsValue"/>
     </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
   name: 'Node',
   mixins: [baseNode],
   props: {
-    comp: {
+    node: {
       type: Object,
       default: null
     }
@@ -41,14 +41,14 @@ export default {
   },
   computed: {
     getPropsValue () {
-      return this.comp.propsValue
+      return this.node.propsValue
     },
     isContainer () {
-      return this.comp.name === Container.info.name
+      return this.node.name === Container.info.name
     },
     hasChildren () {
       if (this.isContainer) {
-        return this.comp.children.length !== 0
+        return this.node.children.length !== 0
       } else {
         return false
       }
@@ -58,16 +58,14 @@ export default {
     handleDelete () {
     },
     handleSelect () {
-      this.selectedNode$.next({ type: 'SET', payload: this.comp })
+      this.node$.next({ type: 'SET_SELECTED', payload: this.node })
     }
   },
   created () {
-    this.comp.vm = this
-
-    this.selectedNode$.pipe(
-      filter(action => action.type === 'CHANGE')
+    this.node$.pipe(
+      filter(action => action.type === 'SET_SELECTED')
     ).subscribe((action) => {
-      this.isSelected = action.payload === this.comp
+      this.isSelected = action.payload === this.node
     })
   }
 }
@@ -77,11 +75,10 @@ export default {
   @import "node_modules/spectre.css/src/variables";
 
   .node {
-    outline: 2px solid $secondary-color;
+    box-shadow: inset 0 0 0 1px $secondary-color;
 
     &.is-selected {
-      outline: 2px solid $primary-color;
-      z-index: 10;
+      box-shadow: inset 0 0 0 1px $primary-color;
     }
   }
 

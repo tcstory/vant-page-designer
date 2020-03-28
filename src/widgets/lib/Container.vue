@@ -1,5 +1,5 @@
 <template>
-  <div class="wrap">
+  <div class="container">
     <slot></slot>
   </div>
 </template>
@@ -14,7 +14,7 @@ export default {
 </script>
 
 <style scoped>
-  .wrap {
+  .container {
     display: flex;
     flex-direction: column;
   }
