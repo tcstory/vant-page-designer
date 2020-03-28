@@ -30,13 +30,7 @@ export default {
   data () {
     return {
       children: [],
-      isSelected: false,
-      tmp: {
-        text: 'ok',
-        type: 'info',
-        'loading-text': '加载中...',
-        loading: true
-      }
+      isSelected: false
     }
   },
   computed: {
@@ -58,12 +52,12 @@ export default {
     handleDelete () {
     },
     handleSelect () {
-      this.node$.next({ type: 'SET_SELECTED', payload: this.node })
+      this.node$.next({ type: 'SET_SELECTED.request', payload: this.node })
     }
   },
   created () {
     this.node$.pipe(
-      filter(action => action.type === 'SET_SELECTED')
+      filter(action => action.type === 'SET_SELECTED.order')
     ).subscribe((action) => {
       this.isSelected = action.payload === this.node
     })

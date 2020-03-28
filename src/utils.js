@@ -1,14 +1,13 @@
 export function createCompInfo (info) {
   return {
     ...info,
-    id: `${info.name}-${info.version}`,
-    vm: null
+    id: `${info.name}-${info.version}`
   }
 }
 
 export function freeze (info) {
   const ret = {
-    objectId: Date.now(),
+    objectId: Math.random(),
     ...info
   }
 

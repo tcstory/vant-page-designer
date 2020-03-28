@@ -1,16 +1,24 @@
 import Vue from 'vue'
 
 import VanButton from './widgets/VanButton'
+import VanImage from './widgets/VanImage'
 import { freeze } from './utils'
+
+const componentList = [
+  VanButton,
+  VanImage
+]
 
 const store = {}
 let keys = []
 
 function install () {
-  const name = VanButton.component.name
-  Vue.component(name, VanButton.component)
+  for (const comp of componentList) {
+    const name = comp.component.name
+    Vue.component(name, comp.component)
 
-  store[name] = VanButton
+    store[name] = comp
+  }
 
   keys = Object.keys(store)
 }
@@ -31,29 +39,7 @@ function getComponents () {
 }
 
 function getPropsValue (obj) {
-  const comp = obj.component
-
-  const propsValue = {}
-
-  for (const key of Object.keys(comp.props)) {
-    const value = comp.props[key]
-
-    if (value.default) {
-      propsValue[key] = value.default
-    } else if (value.type instanceof Function) {
-      if (value.type.name === 'String') {
-        propsValue[key] = ''
-      }
-    } else if (value.type instanceof Array) {
-      propsValue[key] = ''
-    }
-  }
-
-  if (obj.getDefaultPropsValue) {
-    Object.assign(propsValue, obj.getDefaultPropsValue())
-  }
-
-  return propsValue
+  return obj.getDefaultPropsValue()
 }
 
 export default {

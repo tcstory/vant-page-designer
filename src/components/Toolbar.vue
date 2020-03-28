@@ -61,23 +61,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.card {
-  cursor: pointer;
-  width: 100px;
-  font-size: 14px;
-  display: inline-block;
-
-  .card-image {
-    padding-top: 0;
-    height: 64px;
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-    margin: 0 auto;
-  }
-}
-
 .tool {
   height: 100%;
   width: 240px;

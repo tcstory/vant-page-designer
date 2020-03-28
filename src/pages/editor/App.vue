@@ -8,6 +8,7 @@
     <main id="stage">
       <toolbar/>
       <router-view/>
+      <edit-panel />
     </main>
   </div>
 </template>
@@ -19,6 +20,7 @@ import defaultWidget from '@/defaultWidget.js'
 import vantWidget from '@/vantWidget'
 
 import Toolbar from '@/components/Toolbar'
+import EditPanel from '@/components/EditPanel'
 import { Subject } from 'rxjs'
 
 defaultWidget.install()
@@ -33,7 +35,8 @@ Vue.prototype.node$ = node$
 export default {
   name: 'App',
   components: {
-    Toolbar
+    Toolbar,
+    EditPanel
   }
 }
 </script>

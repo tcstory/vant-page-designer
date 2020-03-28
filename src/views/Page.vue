@@ -20,19 +20,15 @@ export default {
     }
   },
   methods: {
-    createInstance (id) {
-      const node = defaultWidget.createInstance(id)
-
-      this.nodeMap[node.objectId] = node
-      return node
-    },
     setReceiver () {
       q.setReceiver(this.$refs.receiver.contentWindow)
     },
     setRootNode () {
+      const node = defaultWidget.createInstance(Container.info.id)
+
       this.node$.next({
         type: 'ADD',
-        payload: this.createInstance(Container.info.id)
+        payload: node
       })
     },
     initNodeMap () {
@@ -45,7 +41,7 @@ export default {
     q.subscribe((msg) => {
       if (msg.type === 'SET_SELECTED.request') {
         this.node$.next({
-          type: 'SET_SELECTED',
+          type: 'SET_SELECTED.request',
           payload: msg.payload
         })
       }
@@ -53,6 +49,7 @@ export default {
 
     this.node$.subscribe((action) => {
       if (action.type === 'ADD') {
+        this.nodeMap[action.payload.objectId] = action.payload
         q.sendMsg('ADD.order', action.payload)
 
         if (this.node === null) {
@@ -62,7 +59,7 @@ export default {
             this.selectedNode.children.push(action.payload)
           }
         }
-      } else if (action.type === 'SET_SELECTED') {
+      } else if (action.type === 'SET_SELECTED.request') {
         this.selectedNode = this.nodeMap[action.payload]
         q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
       } else {
