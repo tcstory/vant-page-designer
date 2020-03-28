@@ -39,7 +39,11 @@ export default {
   },
   methods: {
     onInput (ev, panel, keyVal) {
-      const value = ev.target.value
+      let value = ev.target.value
+
+      if (keyVal.type === 'number') {
+        value = Number(value)
+      }
 
       panel.propsValue[keyVal.key] = value
 

@@ -13,5 +13,13 @@ Container.name = info.id
 
 export default {
   info,
-  component: Container
+  component: Container,
+  getDefaultPropsValue () {
+    return {
+    }
+  },
+  getPropsKey () {
+    return [
+    ]
+  }
 }

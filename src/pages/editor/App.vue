@@ -5,7 +5,8 @@
         Vant Designer
       </section>
       <section class="navbar-section">
-        <a href="#" class="btn btn-link publish-btn" @click="handlePublish">发布</a>
+        <a href="#" class="btn btn-link action-btn" @click="handleExport">导入</a>
+        <a href="#" class="btn btn-link action-btn" @click="handlePublish">发布</a>
       </section>
     </header>
     <main id="stage">
@@ -35,6 +36,10 @@ const node$ = new Subject()
 
 Vue.prototype.node$ = node$
 
+const system$ = new Subject()
+
+Vue.prototype.system$ = system$
+
 export default {
   name: 'App',
   components: {
@@ -43,8 +48,13 @@ export default {
   },
   methods: {
     handlePublish () {
-      node$.next({
+      system$.next({
         type: 'PUBLISH'
+      })
+    },
+    handleExport () {
+      system$.next({
+        type: 'IMPORT'
       })
     }
   }
@@ -77,7 +87,7 @@ $nav-height: 44px;
   display: flex;
 }
 
-.publish-btn {
+.action-btn {
   color: white!important;
 }
 

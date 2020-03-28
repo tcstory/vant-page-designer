@@ -78,11 +78,16 @@ export default {
           value = Number(value)
         }
         node.propsValue[key] = value
+      } else if (msg.type === 'RELOAD.order') {
+        this.node = msg.payload.node
+        this.selectedNode = msg.payload.node
+        this.selectedContainer = msg.payload.node
+        this.nodeMap = msg.payload.nodeMap
       }
     })
   },
   mounted () {
-
+    this.q.sendMsg('LOADED.request', '')
   }
 }
 </script>

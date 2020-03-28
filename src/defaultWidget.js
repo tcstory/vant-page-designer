@@ -28,8 +28,20 @@ function getComponents () {
   })
 }
 
+function createInstanceFromJson (obj) {
+  const key = obj.id
+
+  if (store[key]) {
+    obj.propsKey = Object.freeze(store[key].getPropsKey())
+    return true
+  } else {
+    return false
+  }
+}
+
 export default {
   install,
   createInstance,
+  createInstanceFromJson,
   getComponents
 }

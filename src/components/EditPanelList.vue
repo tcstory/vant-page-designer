@@ -41,6 +41,14 @@ export default {
 
       this.setActivePanel(objectId)
     })
+
+    this.system$.pipe(
+      filter(action => action.type === 'RELOAD')
+    ).subscribe((action) => {
+      this.panelList = []
+      this.panelMap = {}
+      this.activePanel = -1
+    })
   }
 }
 </script>

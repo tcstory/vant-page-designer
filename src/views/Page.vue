@@ -1,25 +1,32 @@
 <template>
   <article class="iphone-wrap">
     <iframe src="//localhost:8080/demo" id="iphone" ref="receiver" frameborder="0"></iframe>
+    <file-reader />
   </article>
 </template>
 
 <script>
+import FileSaver from 'file-saver'
 import defaultWidget from '../defaultWidget'
 import Container from '../widgets/Container.js'
 
+import FileReader from '../components/FileReader'
 import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
-import { getTree } from '../utils'
+import { convertToTree, convertToJson } from '../utils'
 const q = new Queue()
 
 export default {
   name: 'Page',
+  components: {
+    FileReader
+  },
   data () {
     return {
       node: null,
       selectedNode: null,
-      selectedContainer: null
+      selectedContainer: null,
+      reloadIframe: false
     }
   },
   methods: {
@@ -36,6 +43,20 @@ export default {
     },
     initNodeMap () {
       this.nodeMap = {}
+    },
+    buildNodeMap (tree) {
+      const traverse = (node) => {
+        this.nodeMap[node.objectId] = node
+
+        if (node.children && node.children.length) {
+          for (const child of node.children) {
+            traverse(child)
+          }
+        }
+      }
+
+      this.initNodeMap()
+      traverse(tree)
     }
   },
   created () {
@@ -52,6 +73,16 @@ export default {
       } else if (msg.type === 'SET_CONTAINER.request') {
         this.selectedContainer = this.nodeMap[msg.payload]
         q.sendMsg('SET_CONTAINER.order', this.selectedContainer.objectId)
+      } else if (msg.type === 'LOADED.request') {
+        if (this.reloadIframe) {
+          q.sendMsg('RELOAD.order', {
+            node: this.node,
+            nodeMap: this.nodeMap
+          })
+        } else {
+          this.setReceiver()
+          this.setRootNode()
+        }
       }
     })
 
@@ -68,8 +99,6 @@ export default {
             q.sendMsg('ADD.order', action.payload)
           }
         }
-      } else if (action.type === 'PUBLISH') {
-        console.log('publish', JSON.stringify(getTree(this.node)))
       } else {
         // nothing
       }
@@ -81,12 +110,30 @@ export default {
     ).subscribe((action) => {
       q.sendMsg('UPDATE_PROP_VALUE.order', action.payload)
     })
+
+    this.system$.subscribe((action) => {
+      if (action.type === 'PUBLISH') {
+        const content = JSON.stringify(convertToJson(this.node))
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
+        FileSaver.saveAs(blob, 'test.json')
+      } else if (action.type === 'PARSE_TREE') {
+        const tree = convertToTree(action.payload)
+        this.system$.next({
+          type: 'RELOAD',
+          payload: tree
+        })
+      } else if (action.type === 'RELOAD') {
+        const tree = action.payload
+        this.node = tree
+        this.selectedNode = this.node
+        this.selectedContainer = this.node
+        this.buildNodeMap(tree)
+        this.$refs.receiver.contentWindow.location.reload()
+        this.reloadIframe = tree
+      }
+    })
   },
   mounted () {
-    this.$refs.receiver.onload = () => {
-      this.setReceiver()
-      this.setRootNode()
-    }
   }
 }
 </script>

@@ -33,6 +33,16 @@ function createInstance (key) {
   return obj
 }
 
+function createInstanceFromJson (obj) {
+  const key = obj.id
+  if (store[key]) {
+    obj.propsKey = Object.freeze(store[key].getPropsKey())
+    return true
+  } else {
+    return false
+  }
+}
+
 function getComponents () {
   return keys.map(function (key) {
     return freeze({
@@ -44,5 +54,6 @@ function getComponents () {
 export default {
   install,
   createInstance,
+  createInstanceFromJson,
   getComponents
 }
