@@ -2,11 +2,13 @@ import Vue from 'vue'
 
 import VanButton from './widgets/VanButton'
 import VanImage from './widgets/VanImage'
+import VanRate from './widgets/VanRate'
 import { freeze } from './utils'
 
 const componentList = [
   VanButton,
-  VanImage
+  VanImage,
+  VanRate
 ]
 
 const store = {}
