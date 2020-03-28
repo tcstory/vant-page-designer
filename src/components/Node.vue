@@ -1,5 +1,5 @@
 <template>
-    <div class="node p-1" :class="{
+    <div class="node" :class="{
       'is-container': isContainer,
       'is-selected': isSelected,
       'no-children': !hasChildren
