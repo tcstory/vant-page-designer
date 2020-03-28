@@ -2,7 +2,10 @@
   <div id="app">
     <header class="navbar bg-primary" id="nav">
       <section class="navbar-section">
-        Notion Vue
+        Vant Designer
+      </section>
+      <section class="navbar-section">
+        <a href="#" class="btn btn-link publish-btn" @click="handlePublish">发布</a>
       </section>
     </header>
     <main id="stage">
@@ -37,6 +40,13 @@ export default {
   components: {
     Toolbar,
     EditPanelList
+  },
+  methods: {
+    handlePublish () {
+      node$.next({
+        type: 'PUBLISH'
+      })
+    }
   }
 }
 </script>
@@ -65,6 +75,10 @@ $nav-height: 44px;
 #stage {
   height: calc(100% - #{$nav-height});
   display: flex;
+}
+
+.publish-btn {
+  color: white!important;
 }
 
 </style>

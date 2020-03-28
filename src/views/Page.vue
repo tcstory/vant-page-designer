@@ -67,6 +67,8 @@ export default {
             q.sendMsg('ADD.order', action.payload)
           }
         }
+      } else if (action.type === 'PUBLISH') {
+        console.log('publish', action, this.node)
       } else {
         // nothing
       }
