@@ -6,6 +6,11 @@
         <input class="form-input" type="text" :id="keyVal.key" :value="panel.propsValue[keyVal.key]"
                v-on:input="onInput($event, panel, keyVal)">
       </template>
+      <template v-if="keyVal.type ==='number'">
+        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
+        <input class="form-input" type="number" :id="keyVal.key" :value="panel.propsValue[keyVal.key]"
+               v-on:input="onInput($event, panel, keyVal)">
+      </template>
       <template v-if="keyVal.type ==='image'">
         <image-uploader :src="panel.propsValue[keyVal.key]" :object-id="panel.objectId" :key-val="keyVal"
           v-on:image-src-change="onInput($event, panel, keyVal)"/>
@@ -43,6 +48,7 @@ export default {
         payload: {
           objectId: panel.objectId,
           key: keyVal.key,
+          type: keyVal.type,
           value
         }
       })

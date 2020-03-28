@@ -16,14 +16,13 @@ export default {
   component: VanImage,
   getDefaultPropsValue () {
     return {
-      value: '3',
-      count: 5,
-      height: '100'
+      value: 3,
+      count: 5
     }
   },
   getPropsKey () {
     return [
-      { key: 'value', type: 'string', label: '当前分值' },
+      { key: 'value', type: 'number', label: '当前分值' },
       { key: 'count', type: 'string', label: '图标总数' }
     ]
   }

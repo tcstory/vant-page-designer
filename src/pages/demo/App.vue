@@ -71,8 +71,12 @@ export default {
       } else if (msg.type === 'SET_CONTAINER.order') {
         this.selectedContainer = this.nodeMap[msg.payload]
       } else if (msg.type === 'UPDATE_PROP_VALUE.order') {
-        const { objectId, key, value } = msg.payload
+        let { objectId, key, value, type } = msg.payload
         const node = this.nodeMap[objectId]
+
+        if (type === 'number') {
+          value = Number(value)
+        }
         node.propsValue[key] = value
       }
     })
