@@ -10,6 +10,7 @@ import Container from '../widgets/Container.js'
 
 import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
+import { getTree } from '../utils'
 const q = new Queue()
 
 export default {
@@ -68,7 +69,7 @@ export default {
           }
         }
       } else if (action.type === 'PUBLISH') {
-        console.log('publish', action, this.node)
+        console.log('publish', JSON.stringify(getTree(this.node)))
       } else {
         // nothing
       }

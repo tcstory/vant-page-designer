@@ -26,3 +26,20 @@ export function freeze (info) {
 
   return ret
 }
+
+export function getTree (node) {
+  const ret = node
+  ret.propsKey = undefined
+  const children = []
+
+  if (node.children && node.children.length) {
+    for (const child of node.children) {
+      children.push(getTree(child))
+    }
+  } else {
+    return ret
+  }
+
+  ret.children = children
+  return ret
+}
