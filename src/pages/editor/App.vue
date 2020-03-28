@@ -8,7 +8,7 @@
     <main id="stage">
       <toolbar/>
       <router-view/>
-      <edit-panel />
+      <edit-panel-list />
     </main>
   </div>
 </template>
@@ -20,7 +20,7 @@ import defaultWidget from '@/defaultWidget.js'
 import vantWidget from '@/vantWidget'
 
 import Toolbar from '@/components/Toolbar'
-import EditPanel from '@/components/EditPanel'
+import EditPanelList from '@/components/EditPanelList'
 import { Subject } from 'rxjs'
 
 defaultWidget.install()
@@ -36,13 +36,14 @@ export default {
   name: 'App',
   components: {
     Toolbar,
-    EditPanel
+    EditPanelList
   }
 }
 </script>
 
 <style lang="scss">
 @import "~spectre.css";
+@import "~spectre.css/dist/spectre-exp.css";
 
 html, body {
 }

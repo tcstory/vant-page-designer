@@ -1,26 +1,35 @@
 <template>
-  <div class="edit-panel-wrap bg-gray p-2">
-    <div v-for="panel of panelList" :key="panel.objectId" class="edit-panel"
-         :class="{active: activePanel === panel.objectId}">
-      <div class="form-group" v-for="keyVal of panel.propsKey" :key="keyVal.key">
+  <div class="edit-panel p-2" :class="{active: isActive}">
+    <div class="form-group" v-for="keyVal of panel.propsKey" :key="keyVal.key">
+      <template v-if="keyVal.type ==='string'">
         <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
-        <input class="form-input" type="text" :id="keyVal.key"
+        <input class="form-input" type="text" :id="keyVal.key" :value="panel.propsValue[keyVal.key]"
                v-on:input="onInput($event, panel, keyVal)">
-      </div>
+      </template>
+      <template v-if="keyVal.type ==='image'">
+        <image-uploader :src="panel.propsValue[keyVal.key]" :object-id="panel.objectId" :key-val="keyVal"
+          v-on:image-src-change="onInput($event, panel, keyVal)"/>
+      </template>
     </div>
   </div>
 </template>
 
 <script>
-import { filter } from 'rxjs/operators'
+import ImageUploader from './ImageUploader'
 
 export default {
   name: 'EditPanel',
-  data () {
-    return {
-      panelList: [],
-      panelMap: {},
-      activePanel: -1
+  components: {
+    ImageUploader
+  },
+  props: {
+    panel: {
+      type: Object,
+      required: true
+    },
+    isActive: {
+      type: Boolean,
+      required: true
     }
   },
   methods: {
@@ -37,39 +46,13 @@ export default {
           value
         }
       })
-    },
-    setActivePanel (id) {
-      this.activePanel = id
     }
-  },
-  created () {
-    this.node$.pipe(
-      filter(action => action.type === 'EDIT')
-    ).subscribe((action) => {
-      const { objectId } = action.payload
-
-      if (!this.panelMap[objectId]) {
-        this.panelList.push(action.payload)
-        this.panelMap[objectId] = action.payload
-      }
-
-      console.log(this.panelList)
-      this.setActivePanel(objectId)
-    })
   }
+
 }
 </script>
 
 <style scoped lang="scss">
-  .edit-panel-wrap {
-    height: 100%;
-    width: 240px;
-    flex-shrink: 0;
-    flex-grow: 0;
-    position: relative;
-    overflow: hidden;
-  }
-
   .edit-panel {
     opacity: 0;
     position: absolute;
