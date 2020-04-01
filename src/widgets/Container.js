@@ -21,5 +21,10 @@ export default {
   getPropsKey () {
     return [
     ]
+  },
+  getStyle () {
+    return {
+
+    }
   }
 }

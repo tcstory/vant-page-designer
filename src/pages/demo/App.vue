@@ -1,6 +1,10 @@
 <template>
   <main id="iphone">
-    <node v-if="node !== null" :node="node" v-bind:style="{'width': '100%', 'height': '100%'}"/>
+    <node
+      v-if="node !== null"
+      :node="node"
+      v-bind:style="{ width: '100%', height: '100%' }"
+    />
   </main>
 </template>
 
@@ -43,13 +47,14 @@ export default {
     setRootNode (node) {
       this.nodeMap[node.objectId] = node
       this.node = node
+      this.node.parent = null
     }
   },
   created () {
     this.initNodeMap()
     q.setReceiver(window.parent)
 
-    q.subscribe((msg) => {
+    q.subscribe(msg => {
       if (msg.type === 'ADD.order') {
         this.nodeMap[msg.payload.objectId] = msg.payload
 
@@ -60,6 +65,7 @@ export default {
         } else {
           if (this.selectedContainer.children) {
             this.selectedContainer.children.push(msg.payload)
+            msg.payload.parent = this.selectedContainer
           }
         }
       } else if (msg.type === 'SET_SELECTED.order') {
@@ -83,6 +89,18 @@ export default {
         this.selectedNode = msg.payload.node
         this.selectedContainer = msg.payload.node
         this.nodeMap = msg.payload.nodeMap
+      } else if (msg.type === 'DELETE_NODE.order') {
+        const targetNode = this.nodeMap[msg.payload]
+        if (targetNode.children) {
+          targetNode.children = []
+        }
+        const parent = targetNode.parent
+        for (let i = 0; i < parent.children.length; i++) {
+          const child = parent.children[i]
+          if (child.objectId === targetNode.objectId) {
+            parent.children.splice(i, 1)
+          }
+        }
       }
     })
   },
@@ -93,16 +111,16 @@ export default {
 </script>
 
 <style>
-  body {
-    width: 100%;
-    height: 100vh;
-  }
+body {
+  width: 100%;
+  height: 100vh;
+}
 </style>
 
 <style scoped lang="scss">
-  @import "~vant/lib/style/reset.css";
-  #iphone {
-    width: 100%;
-    height: 100%;
-  }
+@import "~vant/lib/style/reset.css";
+#iphone {
+  width: 100%;
+  height: 100%;
+}
 </style>

@@ -1,5 +1,22 @@
 <template>
   <div class="edit-panel p-2" :class="{active: isActive}">
+    <h4>{{panel.name}}</h4>
+    <div class="id-row"><span class="text-primary">唯一标识: </span>{{panel.objectId}}</div>
+    <div class="action-row">
+      <span class="text-primary">操作: </span>
+      <button v-if="panel.parent" class="btn btn-action btn-primary btn-sm" @click="handleDelete"><i class="icon icon-delete"></i></button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">样式</label>
+      <div class="form-group">
+        <label class="form-label">宽度</label>
+        <input class="form-input" type="text">
+      </div>
+      <div class="form-group">
+        <label class="form-label">高度</label>
+        <input class="form-input" type="text">
+      </div>
+    </div>
     <div class="form-group" v-for="keyVal of panel.propsKey" :key="keyVal.key">
       <template v-if="keyVal.type ==='string'">
         <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
@@ -56,6 +73,12 @@ export default {
           value
         }
       })
+    },
+    handleDelete () {
+      this.node$.next({
+        type: 'DELETE_NODE',
+        payload: this.panel.objectId
+      })
     }
   }
 
@@ -75,5 +98,9 @@ export default {
       opacity: 1;
       z-index: 10;
     }
+  }
+
+  .id-row {
+    font-size: 13px;
   }
 </style>

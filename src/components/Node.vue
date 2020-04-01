@@ -72,6 +72,7 @@ export default {
   @import "node_modules/spectre.css/src/variables";
 
   .node {
+    display: inline-block;
     box-shadow: inset 0 0 0 1px $secondary-color;
 
     &.is-selected {
@@ -80,7 +81,8 @@ export default {
   }
 
   .is-container {
-    flex: 1;
+    /*flex: 1;*/
+    display: block;
 
     &.no-children {
       min-height: 64px;

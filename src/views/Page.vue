@@ -93,12 +93,32 @@ export default {
         if (this.node === null) {
           q.sendMsg('ADD.order', action.payload)
           this.node = action.payload
+          this.node.parent = null
         } else {
           if (this.selectedContainer.children) {
             this.selectedContainer.children.push(action.payload)
+            action.payload.parent = this.selectedContainer
             q.sendMsg('ADD.order', action.payload)
           }
         }
+      } else if (action.type === 'DELETE_NODE') {
+        const targetNode = this.nodeMap[action.payload]
+
+        if (targetNode.parent === null) {
+          return
+        }
+        if (targetNode.children) {
+          targetNode.children = []
+        }
+        const parent = targetNode.parent
+        for (let i = 0; i < parent.children.length; i++) {
+          const child = parent.children[i]
+          if (child.objectId === targetNode.objectId) {
+            parent.children.splice(i, 1)
+          }
+        }
+        q.sendMsg('DELETE_NODE.order', action.payload)
+        this.node$.next({ type: 'DELETE_NODE_CONFIRM', payload: action.payload })
       } else {
         // nothing
       }

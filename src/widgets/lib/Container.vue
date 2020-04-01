@@ -9,7 +9,15 @@ import baseComp from '../../mixin/baseComp'
 
 export default {
   name: 'Container',
-  mixins: [baseComp]
+  mixins: [baseComp],
+  props: {
+    styleValue: {
+      type: Object,
+      default () {
+        return {}
+      }
+    }
+  }
 }
 </script>
 

@@ -4,7 +4,8 @@ import vantWidget from './vantWidget'
 export function createCompInfo (info) {
   return {
     ...info,
-    id: `${info.name}-${info.version}`
+    id: `${info.name}-${info.version}`,
+    parent: null
   }
 }
 

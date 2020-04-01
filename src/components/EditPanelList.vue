@@ -49,6 +49,17 @@ export default {
       this.panelMap = {}
       this.activePanel = -1
     })
+
+    this.node$.subscribe((action) => {
+      if (action.type === 'DELETE_NODE_CONFIRM') {
+        for (let i = 0; i < this.panelList.length; i++) {
+          const target = this.panelList[i]
+          if (target.objectId === action.payload) {
+            this.panelList.splice(i, 1)
+          }
+        }
+      }
+    })
   }
 }
 </script>
