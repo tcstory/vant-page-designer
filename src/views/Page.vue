@@ -8,7 +8,7 @@
 <script>
 import FileSaver from 'file-saver'
 import defaultWidget from '../defaultWidget'
-import Container from '../widgets/Container.js'
+import Container from '../widgets/Container'
 
 import FileReader from '../components/FileReader'
 import Queue from '../queue'
@@ -125,10 +125,10 @@ export default {
     })
 
     this.node$.pipe(
-      filter(action => action.type === 'UPDATE_PROP_VALUE'),
+      filter(action => ['UPDATE_PROP_VALUE', 'UPDATE_STYLE_VALUE'].indexOf(action.type) !== -1),
       debounceTime(150)
     ).subscribe((action) => {
-      q.sendMsg('UPDATE_PROP_VALUE.order', action.payload)
+      q.sendMsg(`${action.type}.order`, action.payload)
     })
 
     this.system$.subscribe((action) => {
@@ -160,6 +160,9 @@ export default {
 
 <style lang="scss" scoped>
   .iphone-wrap {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
     background-position: 0 0,13px 13px;
     background-size: 26px 26px;
@@ -169,7 +172,6 @@ export default {
   #iphone {
     width: 375px;
     height: 667px;
-    margin: 20px auto 0;
     display: block;
   }
 </style>

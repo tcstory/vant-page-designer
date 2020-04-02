@@ -1,20 +1,18 @@
 <template>
   <div class="edit-panel p-2" :class="{active: isActive}">
     <h4>{{panel.name}}</h4>
-    <div class="id-row"><span class="text-primary">唯一标识: </span>{{panel.objectId}}</div>
-    <div class="action-row">
+    <div class="id-row panel-row"><span class="text-primary">唯一标识: </span>{{panel.objectId}}</div>
+    <div class="action-row panel-row">
       <span class="text-primary">操作: </span>
       <button v-if="panel.parent" class="btn btn-action btn-primary btn-sm" @click="handleDelete"><i class="icon icon-delete"></i></button>
     </div>
-    <div class="form-group">
-      <label class="form-label">样式</label>
-      <div class="form-group">
-        <label class="form-label">宽度</label>
-        <input class="form-input" type="text">
-      </div>
-      <div class="form-group">
-        <label class="form-label">高度</label>
-        <input class="form-input" type="text">
+    <h5>样式</h5>
+    <box-model :node="panel" />
+    <div class="form-group" v-if="panel.parent">
+      <div class="form-group" v-for="keyVal of panel.styleKey" :key="keyVal.key">
+        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
+        <input class="form-input" type="text" :id="keyVal.key" :value="panel.styleValue[keyVal.key]"
+               v-on:input="onStyleInput($event, keyVal)">
       </div>
     </div>
     <div class="form-group" v-for="keyVal of panel.propsKey" :key="keyVal.key">
@@ -37,12 +35,14 @@
 </template>
 
 <script>
+import BoxModel from './BoxModel'
 import ImageUploader from './ImageUploader'
 
 export default {
   name: 'EditPanel',
   components: {
-    ImageUploader
+    ImageUploader,
+    BoxModel
   },
   props: {
     panel: {
@@ -74,6 +74,21 @@ export default {
         }
       })
     },
+    onStyleInput (ev, keyVal) {
+      // todo 判断设置的值是合法的, 再把事件广播出去
+      const value = ev.target.value
+
+      this.panel.styleValue[keyVal.key] = value
+
+      this.node$.next({
+        type: 'UPDATE_STYLE_VALUE',
+        payload: {
+          objectId: this.panel.objectId,
+          key: keyVal.key,
+          value
+        }
+      })
+    },
     handleDelete () {
       this.node$.next({
         type: 'DELETE_NODE',
@@ -100,7 +115,14 @@ export default {
     }
   }
 
+  .panel-row {
+    height: 32px;
+    display: flex;
+    align-items: center;
+  }
+
   .id-row {
     font-size: 13px;
+    height: 22px;
   }
 </style>

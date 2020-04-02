@@ -3,7 +3,6 @@
     <node
       v-if="node !== null"
       :node="node"
-      v-bind:style="{ width: '100%', height: '100%' }"
     />
   </main>
 </template>
@@ -48,6 +47,10 @@ export default {
       this.nodeMap[node.objectId] = node
       this.node = node
       this.node.parent = null
+      this.node.styleValue = {
+        width: '100%',
+        height: '100%'
+      }
     }
   },
   created () {
@@ -84,6 +87,11 @@ export default {
           value = Number(value)
         }
         node.propsValue[key] = value
+      } else if (msg.type === 'UPDATE_STYLE_VALUE.order') {
+        const { objectId, key, value } = msg.payload
+        const node = this.nodeMap[objectId]
+        console.log('value', value)
+        node.styleValue[key] = value
       } else if (msg.type === 'RELOAD.order') {
         this.node = msg.payload.node
         this.selectedNode = msg.payload.node

@@ -3,7 +3,7 @@
       'is-container': isContainer,
       'is-selected': isSelected,
       'no-children': !hasChildren
-    }" @click.stop="handleSelect">
+    }" @click.stop="handleSelect"  v-bind:style="getStyleValue">
       <template v-if="isContainer">
         <component v-if="node" v-bind:is="node.id">
           <node v-for="item in node.children" :key="item._createdTime" :node="item"/>
@@ -15,7 +15,7 @@
 
 <script>
 import baseNode from '../mixin/baseNode'
-import Container from '../widgets/Container.js'
+import Container from '../widgets/Container'
 import { filter } from 'rxjs/operators'
 
 export default {
@@ -35,7 +35,12 @@ export default {
   },
   computed: {
     getPropsValue () {
+      console.log('getPropsValue', this.node)
+
       return this.node.propsValue
+    },
+    getStyleValue () {
+      return this.node.styleValue
     },
     isContainer () {
       return this.node.name === Container.info.name

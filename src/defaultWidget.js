@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Container from './widgets/Container.js'
+import Container from './widgets/Container'
 import { freeze } from './utils'
 
 const store = {
@@ -17,7 +17,11 @@ function install () {
 }
 
 function createInstance (key) {
-  return freeze(store[key].info)
+  const obj = freeze(store[key].info)
+  obj.styleValue = store[key].getStyleValue()
+  obj.styleKey = store[key].getStyleKey()
+
+  return obj
 }
 
 function getComponents () {
