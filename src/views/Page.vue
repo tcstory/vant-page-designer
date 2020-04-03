@@ -14,6 +14,12 @@ import FileReader from '../components/FileReader'
 import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
 import { convertToTree, convertToJson } from '../utils'
+
+import {
+  setRoot,
+  setNodeMap
+} from '@/store'
+
 const q = new Queue()
 
 export default {
@@ -43,6 +49,7 @@ export default {
     },
     initNodeMap () {
       this.nodeMap = {}
+      setNodeMap(this.nodeMap)
     },
     buildNodeMap (tree) {
       const traverse = (node) => {
@@ -94,6 +101,7 @@ export default {
           q.sendMsg('ADD.order', action.payload)
           this.node = action.payload
           this.node.parent = null
+          setRoot(this.node)
         } else {
           if (this.selectedContainer.children) {
             this.selectedContainer.children.push(action.payload)
