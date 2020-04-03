@@ -18,7 +18,7 @@
         <div class="content-border">{{fullContent}}</div>
       </div>
     </div>
-    <div class="form-group" v-if="node.parent">
+    <div class="form-group" v-if="show && node.parent">
       <div class="form-group" v-for="keyVal of node.styleKey" :key="keyVal.key">
         <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
         <input class="form-input" type="text" :id="keyVal.key" :value="node.styleValue[keyVal.key]"
