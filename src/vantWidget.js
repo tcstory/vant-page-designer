@@ -30,6 +30,9 @@ function createInstance (key) {
   obj.propsValue = store[key].getDefaultPropsValue()
   obj.propsKey = Object.freeze(store[key].getPropsKey())
 
+  obj.styleValue = store[key].getStyleValue()
+  obj.styleKey = store[key].getStyleKey()
+
   return obj
 }
 

@@ -25,5 +25,11 @@ export default {
       { key: 'value', type: 'number', label: '当前分值' },
       { key: 'count', type: 'string', label: '图标总数' }
     ]
+  },
+  getStyleValue () {
+    return {}
+  },
+  getStyleKey () {
+    return []
   }
 }

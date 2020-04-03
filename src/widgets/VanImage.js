@@ -27,5 +27,11 @@ export default {
       { key: 'width', type: 'string', label: '宽度' },
       { key: 'height', type: 'string', label: '高度' }
     ]
+  },
+  getStyleValue () {
+    return {}
+  },
+  getStyleKey () {
+    return []
   }
 }

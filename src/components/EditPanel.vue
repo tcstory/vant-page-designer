@@ -8,13 +8,6 @@
     </div>
     <h5>样式</h5>
     <box-model :node="panel" />
-    <div class="form-group" v-if="panel.parent">
-      <div class="form-group" v-for="keyVal of panel.styleKey" :key="keyVal.key">
-        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
-        <input class="form-input" type="text" :id="keyVal.key" :value="panel.styleValue[keyVal.key]"
-               v-on:input="onStyleInput($event, keyVal)">
-      </div>
-    </div>
     <div class="form-group" v-for="keyVal of panel.propsKey" :key="keyVal.key">
       <template v-if="keyVal.type ==='string'">
         <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
@@ -70,21 +63,6 @@ export default {
           objectId: panel.objectId,
           key: keyVal.key,
           type: keyVal.type,
-          value
-        }
-      })
-    },
-    onStyleInput (ev, keyVal) {
-      // todo 判断设置的值是合法的, 再把事件广播出去
-      const value = ev.target.value
-
-      this.panel.styleValue[keyVal.key] = value
-
-      this.node$.next({
-        type: 'UPDATE_STYLE_VALUE',
-        payload: {
-          objectId: this.panel.objectId,
-          key: keyVal.key,
           value
         }
       })

@@ -18,6 +18,13 @@
         <div class="content-border">{{fullContent}}</div>
       </div>
     </div>
+    <div class="form-group" v-if="node.parent">
+      <div class="form-group" v-for="keyVal of node.styleKey" :key="keyVal.key">
+        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
+        <input class="form-input" type="text" :id="keyVal.key" :value="node.styleValue[keyVal.key]"
+               v-on:input="onStyleInput($event, keyVal)">
+      </div>
+    </div>
   </div>
 </template>
 
@@ -39,6 +46,7 @@ export default {
   },
   computed: {
     fullContent () {
+      console.log('this.node', this.node)
       const styleValue = this.node.styleValue
       if (styleValue.width && styleValue.height) {
         return ''
@@ -56,6 +64,21 @@ export default {
   methods: {
     handleClick () {
       this.show = !this.show
+    },
+    onStyleInput (ev, keyVal) {
+      // todo 判断设置的值是合法的, 再把事件广播出去
+      const value = ev.target.value
+
+      this.node.styleValue[keyVal.key] = value
+
+      this.node$.next({
+        type: 'UPDATE_STYLE_VALUE',
+        payload: {
+          objectId: this.node.objectId,
+          key: keyVal.key,
+          value
+        }
+      })
     }
   },
   created () {

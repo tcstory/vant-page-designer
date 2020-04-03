@@ -23,5 +23,11 @@ export default {
     return [
       { key: 'text', type: 'string', label: '文字' }
     ]
+  },
+  getStyleValue () {
+    return {}
+  },
+  getStyleKey () {
+    return []
   }
 }
