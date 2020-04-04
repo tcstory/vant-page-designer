@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-panel p-2" :class="{active: isActive}">
+  <div class="edit-panel p-2" :class="{active: isActive}" ref="panel">
     <h4>{{panel.name}}</h4>
     <div class="id-row panel-row"><span class="text-primary">唯一标识: </span>{{panel.objectId}}</div>
     <div class="action-row panel-row">
@@ -14,6 +14,7 @@
 <script>
 import BoxModel from './BoxModel'
 import PropModel from './PropModel'
+import PerfectScrollbar from 'perfect-scrollbar'
 
 export default {
   name: 'EditPanel',
@@ -38,6 +39,12 @@ export default {
         payload: this.panel.objectId
       })
     }
+  },
+  mounted () {
+    this.ps = new PerfectScrollbar(this.$refs.panel)
+  },
+  beforeDestroy () {
+    this.ps.destroy()
   }
 
 }
