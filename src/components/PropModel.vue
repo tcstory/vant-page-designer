@@ -1,28 +1,26 @@
 <template>
   <div class="box-model mb-2">
     <p @click="handleClick" class="c-hand bg-secondary title-bar">
-      盒模型
+      属性
       <i class="icon icon-arrow-up" v-if="show"></i>
       <i class="icon icon-arrow-down" v-if="!show"></i>
     </p>
-    <div class="margin-border" v-if="show">
-      <span class="dot dot-top">{{fullMargin[0]}}</span>
-      <span class="dot dot-right">{{fullMargin[1]}}</span>
-      <span class="dot dot-bottom">{{fullMargin[2]}}</span>
-      <span class="dot dot-left">{{fullMargin[3]}}</span>
-      <div class="padding-border">
-        <span class="dot dot-top">{{fullPadding[0]}}</span>
-        <span class="dot dot-right">{{fullPadding[1]}}</span>
-        <span class="dot dot-bottom">{{fullPadding[2]}}</span>
-        <span class="dot dot-left">{{fullPadding[3]}}</span>
-        <div class="content-border">{{fullContent}}</div>
-      </div>
-    </div>
     <template v-if="show && node.parent">
-      <div class="form-group" v-for="keyVal of node.styleKey" :key="keyVal.key">
-        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
-        <input class="form-input" type="text" :id="keyVal.key" :value="node.styleValue[keyVal.key]"
-               v-on:input="onStyleInput($event, keyVal)">
+      <div class="form-group" v-for="keyVal of node.propsKey" :key="keyVal.key">
+        <template v-if="keyVal.type ==='string'">
+          <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
+          <input class="form-input" type="text" :id="keyVal.key" :value="node.propsValue[keyVal.key]"
+                 v-on:input="onInput($event, keyVal)">
+        </template>
+        <template v-if="keyVal.type ==='number'">
+          <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
+          <input class="form-input" type="number" :id="keyVal.key" :value="node.propsValue[keyVal.key]"
+                 v-on:input="onInput($event, keyVal)">
+        </template>
+        <template v-if="keyVal.type ==='image'">
+          <image-uploader :src="node.propsValue[keyVal.key]" :object-id="node.objectId" :key-val="keyVal"
+                          v-on:image-src-change="onInput($event, keyVal)"/>
+        </template>
       </div>
     </template>
   </div>
@@ -30,9 +28,13 @@
 
 <script>
 import { filter } from 'rxjs/operators'
+import ImageUploader from './ImageUploader'
 
 export default {
-  name: 'BoxModel',
+  name: 'PropModel',
+  components: {
+    ImageUploader
+  },
   props: {
     node: {
       type: Object,
@@ -44,38 +46,25 @@ export default {
       show: true
     }
   },
-  computed: {
-    fullContent () {
-      console.log('this.node', this.node)
-      const styleValue = this.node.styleValue
-      if (styleValue.width && styleValue.height) {
-        return ''
-      } else {
-        return 'auto * auto'
-      }
-    },
-    fullPadding () {
-      return ['?', '?', '?', '?']
-    },
-    fullMargin () {
-      return ['?', '?', '?', '?']
-    }
-  },
   methods: {
     handleClick () {
       this.show = !this.show
     },
-    onStyleInput (ev, keyVal) {
-      // todo 判断设置的值是合法的, 再把事件广播出去
-      const value = ev.target.value
+    onInput (ev, keyVal) {
+      let value = ev.target.value
 
-      this.node.styleValue[keyVal.key] = value
+      if (keyVal.type === 'number') {
+        value = Number(value)
+      }
+
+      this.node.propsValue[keyVal.key] = value
 
       this.node$.next({
-        type: 'UPDATE_STYLE_VALUE',
+        type: 'UPDATE_PROP_VALUE',
         payload: {
           objectId: this.node.objectId,
           key: keyVal.key,
+          type: keyVal.type,
           value
         }
       })

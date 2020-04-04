@@ -72,6 +72,5 @@ export default {
     flex-grow: 0;
     position: relative;
     overflow: hidden;
-    overflow-y: scroll;
   }
 </style>

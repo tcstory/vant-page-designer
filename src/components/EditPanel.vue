@@ -6,36 +6,20 @@
       <span class="text-primary">操作: </span>
       <button v-if="panel.parent" class="btn btn-action btn-primary btn-sm" @click="handleDelete"><i class="icon icon-delete"></i></button>
     </div>
-    <h5>样式</h5>
     <box-model :node="panel" />
-    <div class="form-group" v-for="keyVal of panel.propsKey" :key="keyVal.key">
-      <template v-if="keyVal.type ==='string'">
-        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
-        <input class="form-input" type="text" :id="keyVal.key" :value="panel.propsValue[keyVal.key]"
-               v-on:input="onInput($event, panel, keyVal)">
-      </template>
-      <template v-if="keyVal.type ==='number'">
-        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
-        <input class="form-input" type="number" :id="keyVal.key" :value="panel.propsValue[keyVal.key]"
-               v-on:input="onInput($event, panel, keyVal)">
-      </template>
-      <template v-if="keyVal.type ==='image'">
-        <image-uploader :src="panel.propsValue[keyVal.key]" :object-id="panel.objectId" :key-val="keyVal"
-          v-on:image-src-change="onInput($event, panel, keyVal)"/>
-      </template>
-    </div>
+    <prop-model :node="panel" />
   </div>
 </template>
 
 <script>
 import BoxModel from './BoxModel'
-import ImageUploader from './ImageUploader'
+import PropModel from './PropModel'
 
 export default {
   name: 'EditPanel',
   components: {
-    ImageUploader,
-    BoxModel
+    BoxModel,
+    PropModel
   },
   props: {
     panel: {
@@ -48,25 +32,6 @@ export default {
     }
   },
   methods: {
-    onInput (ev, panel, keyVal) {
-      let value = ev.target.value
-
-      if (keyVal.type === 'number') {
-        value = Number(value)
-      }
-
-      panel.propsValue[keyVal.key] = value
-
-      this.node$.next({
-        type: 'UPDATE_PROP_VALUE',
-        payload: {
-          objectId: panel.objectId,
-          key: keyVal.key,
-          type: keyVal.type,
-          value
-        }
-      })
-    },
     handleDelete () {
       this.node$.next({
         type: 'DELETE_NODE',
