@@ -1,4 +1,4 @@
-import Container from './Container'
+import Container from './Index'
 import { createCompInfo } from '../../utils'
 
 const info = createCompInfo({

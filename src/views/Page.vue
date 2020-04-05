@@ -13,7 +13,7 @@ import Container from '../widgets/Container'
 import FileReader from '../components/FileReader'
 import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
-import { convertToTree, convertToJson } from '../utils'
+import { convertToTree, convertToJson, outputEntryFile } from '../utils'
 
 const q = new Queue()
 
@@ -143,9 +143,9 @@ export default {
 
     this.system$.subscribe((action) => {
       if (action.type === 'PUBLISH') {
-        const content = JSON.stringify(convertToJson(this.node))
-        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' })
-        FileSaver.saveAs(blob, 'test.json')
+        const content = convertToJson(this.node)
+        const blob = new Blob([outputEntryFile(content)], { type: 'text/plain; charset=utf-8' })
+        FileSaver.saveAs(blob, 'test.js')
       } else if (action.type === 'PARSE_TREE') {
         const tree = convertToTree(action.payload)
         this.system$.next({
