@@ -36,6 +36,8 @@ export function convertToJson (node) {
     ...node
   }
   ret.propsKey = undefined
+  ret.styleKey = undefined
+  ret.parent = undefined
   const children = []
 
   if (ret.children && ret.children.length) {
