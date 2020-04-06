@@ -1,26 +1,61 @@
 <template>
-  <article class="iphone-wrap">
-    <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
-    <file-reader />
-  </article>
+  <div class="page">
+    <header class="navbar bg-primary" id="nav">
+      <section class="navbar-section">
+        Vant Designer
+      </section>
+      <section class="navbar-section">
+        <a href="#" class="btn btn-link action-btn" @click="handleExport">导入</a>
+        <a href="#" class="btn btn-link action-btn" @click="handlePublish">发布</a>
+      </section>
+    </header>
+    <main id="stage">
+      <toolbar/>
+      <article class="iphone-wrap">
+        <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
+        <file-reader />
+      </article>
+      <edit-panel-list />
+    </main>
+  </div>
 </template>
 
 <script>
 import FileSaver from 'file-saver'
-import defaultWidget from '../defaultWidget'
-import Container from '../widgets/Container'
+import Container from '@/widgets/Container/entry'
+import defaultWidget from '@/defaultWidget.js'
+import vantWidget from '@/vantWidget'
 
+import Toolbar from '@/components/Toolbar'
+import EditPanelList from '@/components/EditPanelList'
 import FileReader from '../components/FileReader'
 import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
-import { convertToTree, convertToJson, outputEntryFile } from '../utils'
+import { convertToJson, outputEntryFile } from '../utils'
 
+defaultWidget.install()
+vantWidget.install()
 const q = new Queue()
+
+function convertToTree (node) {
+  const ret = node
+  !defaultWidget.createInstanceFromJson(ret) || vantWidget.createInstanceFromJson(ret)
+
+  if (ret.children && ret.children.length) {
+    for (const child of ret.children) {
+      !defaultWidget.createInstanceFromJson(ret) || vantWidget.createInstanceFromJson(child)
+    }
+  }
+
+  return ret
+}
 
 export default {
   name: 'Page',
   components: {
-    FileReader
+    FileReader,
+    Toolbar,
+    EditPanelList
   },
   data () {
     return {
@@ -31,6 +66,16 @@ export default {
     }
   },
   methods: {
+    handlePublish () {
+      this.system$.next({
+        type: 'PUBLISH'
+      })
+    },
+    handleExport () {
+      this.system$.next({
+        type: 'IMPORT'
+      })
+    },
     setReceiver () {
       q.setReceiver(this.$refs.receiver.contentWindow)
     },
@@ -169,6 +214,25 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  .page {
+    height: 100%;
+  }
+
+  $nav-height: 44px;
+
+  #nav {
+    height: $nav-height;
+  }
+
+  #stage {
+    height: calc(100% - #{$nav-height});
+    display: flex;
+  }
+
+  .action-btn {
+    color: white!important;
+  }
+
   .iphone-wrap {
     display: flex;
     justify-content: center;

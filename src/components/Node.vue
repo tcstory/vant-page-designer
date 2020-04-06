@@ -15,7 +15,7 @@
 
 <script>
 import baseNode from '../mixin/baseNode'
-import Container from '../widgets/Container'
+import Container from '../widgets/Container/entry'
 import { filter } from 'rxjs/operators'
 
 export default {

@@ -1,8 +1,5 @@
 import { camelCase } from 'loadsh'
 
-import defaultWidget from './defaultWidget'
-import vantWidget from './vantWidget'
-
 export function createCompInfo (info) {
   return {
     ...info,
@@ -51,19 +48,6 @@ export function convertToJson (node) {
   }
 
   ret.children = children
-  return ret
-}
-
-export function convertToTree (node) {
-  const ret = node
-  !defaultWidget.createInstanceFromJson(ret) || vantWidget.createInstanceFromJson(ret)
-
-  if (ret.children && ret.children.length) {
-    for (const child of ret.children) {
-      !defaultWidget.createInstanceFromJson(ret) || vantWidget.createInstanceFromJson(child)
-    }
-  }
-
   return ret
 }
 

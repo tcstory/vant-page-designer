@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import Container from './widgets/Container'
+import Container from './widgets/Container/entry'
 import { freeze } from './utils'
 
 const store = {

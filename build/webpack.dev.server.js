@@ -14,6 +14,4 @@ config.plugins.push(
   new webpack.HotModuleReplacementPlugin()
 )
 
-console.log('dev server?????', config)
-
 module.exports = config
