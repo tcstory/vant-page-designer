@@ -5,11 +5,9 @@
 </template>
 
 <script>
-import baseComp from '../../mixin/baseComp'
 
 export default {
   name: 'Container',
-  mixins: [baseComp],
   props: {
     styleValue: {
       type: Object,
@@ -23,7 +21,5 @@ export default {
 
 <style scoped>
   .container {
-    /*display: flex;*/
-    /*flex-direction: column;*/
   }
 </style>

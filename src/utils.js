@@ -74,13 +74,14 @@ export function outputEntryFile (node) {
     if (/^van/.test(node.name)) {
       if (!nodeMap[node.name]) {
         nodeMap[node.name] = true
-        head.push(`import { ${camelCase(node.name)} } from 'Vant';`)
+        const name = /^van-(.*)$/.exec(node.name)[1]
+        head.push(`import { ${camelCase(name)} as ${node.name} } from 'vant';`)
         content.push(`Vue.component('${node.name}', ${camelCase(node.name)});`)
       }
     } else {
       if (!nodeMap[node.name]) {
         nodeMap[node.name] = true
-        head.push(`import { ${camelCase(node.name)} } from "@/widgets/${node.name}/index.vue";`)
+        head.push(`import ${camelCase(node.name)} from "@/widgets/${node.name}/index.vue";`)
         content.push(`Vue.component('${node.name}', ${camelCase(node.name)});`)
       }
     }
@@ -94,7 +95,7 @@ export function outputEntryFile (node) {
     return { head, content }
   }
 
-  const { head, content } = loop(node, [], [])
+  const { head, content } = loop(node, ['import Vue from "Vue";'], [])
   let output = ''
 
   output += head.join('\n')

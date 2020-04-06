@@ -1,4 +1,4 @@
-import Container from './Index'
+import Container from './index.vue'
 import { createCompInfo } from '../../utils'
 
 const info = createCompInfo({

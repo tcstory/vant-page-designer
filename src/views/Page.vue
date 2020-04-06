@@ -1,6 +1,6 @@
 <template>
   <article class="iphone-wrap">
-    <iframe src="//localhost:8080/demo" id="iphone" ref="receiver" frameborder="0"></iframe>
+    <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
     <file-reader />
   </article>
 </template>
