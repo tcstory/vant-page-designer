@@ -13,7 +13,7 @@ const routes = [
   {
     path: '/ide',
     name: 'IDE',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Ide.vue')
+    component: () => import(/* webpackChunkName: "ide" */ '../views/Ide.vue')
   }
 ]
 

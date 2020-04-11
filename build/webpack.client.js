@@ -1,10 +1,15 @@
 const path = require('path')
+
+const SpeedMeasurePlugin = require("speed-measure-webpack-plugin");
+const TerserPlugin = require('terser-webpack-plugin')
 const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 
-module.exports = {
-  mode: 'development',
+const smp = new SpeedMeasurePlugin();
+
+module.exports = smp.wrap({
+  mode: 'production',
   entry: {
     index: path.join(__dirname, './index.js')
   },
@@ -32,7 +37,7 @@ module.exports = {
       {
         test: /\.js(x)?$/,
         exclude: '/node_modules/',
-        loader: 'babel-loader',
+        loader: 'babel-loader'
       },
       {
         test: /\.css$/,
@@ -44,7 +49,12 @@ module.exports = {
     ]
   },
   optimization: {
-    minimize: false
+    minimizer: [
+      new TerserPlugin({
+        parallel: true
+      })
+    ]
+    // minimize: false
     // splitChunks: {
     //   // include all types of chunks
     //   chunks: 'all'
@@ -57,4 +67,4 @@ module.exports = {
       template: path.join(__dirname, './index.html')
     })
   ]
-}
+})
