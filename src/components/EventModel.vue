@@ -1,6 +1,6 @@
 <template>
   <div class="event-model mb-2">
-    <p @click="handleClick" class="c-hand bg-secondary title-bar">
+    <p @click="handleClick" class="c-hand title-bar">
       事件模型
       <i class="icon icon-arrow-up" v-if="show"></i>
       <i class="icon icon-arrow-down" v-if="!show"></i>
@@ -162,6 +162,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    background-color: #2a2d35;
   }
 
   .title {

@@ -1,5 +1,5 @@
 <template>
-  <div class="edit-panel-wrap bg-gray p-2">
+  <div class="edit-panel-wrap p-2">
     <edit-panel v-for="panel of panelList" class="edit-panel"
                 v-bind:is-active="panel.objectId === activePanel"
                 :panel="panel"

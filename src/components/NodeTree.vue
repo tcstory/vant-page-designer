@@ -15,7 +15,7 @@ export default {
       }
 
       return (
-        <div class="item" key={item.objectId} style={{ 'margin-left': `${8 * indent}px` }}>
+        <div class="item" key={item.objectId} style={{ 'padding-left': `${8 * indent}px` }}>
           <div class="content">
             <div class="action-btn"/>
             <div class="action-content">{item.name}</div>
@@ -38,7 +38,7 @@ export default {
   },
   render: function (h) {
     return (
-      <div class="node-tree p-2">
+      <div class="node-tree p-1">
         {
           this.createItem(this.myNode, 0)
         }
@@ -49,8 +49,10 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .item {
+  .node-tree {
     background-color: #202128;
+  }
+  .item {
     min-height: 28px;
     /*width: 280px;*/
     border-radius: 4px;

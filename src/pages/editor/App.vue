@@ -9,7 +9,7 @@ import Vue from 'vue'
 
 import { Subject } from 'rxjs'
 
-require('spectre.css/dist/spectre-icons.min.css')
+// require('spectre.css/dist/spectre-icons.min.css')
 
 const node$ = new Subject()
 

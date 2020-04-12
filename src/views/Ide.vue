@@ -1,12 +1,16 @@
 <template>
   <div class="page">
-    <header class="navbar bg-primary" id="nav">
-      <section class="navbar-section">
-        Vant Designer
+    <header class="navbar" id="nav">
+      <section class="navbar-section text-gray">
+        Page Designer
       </section>
       <section class="navbar-section">
-        <a href="#" class="btn btn-link action-btn" @click="handleExport">导入</a>
-        <a href="#" class="btn btn-link action-btn" @click="handlePublish">发布</a>
+        <a href="#" class="btn btn-link action-btn " @click="handleExport">
+          <span class="text-gray">导入</span>
+        </a>
+        <a href="#" class="btn btn-link action-btn text-gray" @click="handlePublish">
+          <span class="text-gray">发布</span>
+        </a>
       </section>
     </header>
     <main id="stage">
@@ -267,8 +271,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+  @import "node_modules/spectre.css/src/variables";
+
   .page {
     height: 100%;
+    background-color: #202128;
   }
 
   $nav-height: 44px;
@@ -291,9 +298,9 @@ export default {
     justify-content: center;
     align-items: center;
     width: 100%;
-    background-position: 0 0,13px 13px;
-    background-size: 26px 26px;
-    background-image: linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0),linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0);
+    /*background-position: 0 0,13px 13px;*/
+    /*background-size: 26px 26px;*/
+    /*background-image: linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0),linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0);*/
   }
 
   #iphone {

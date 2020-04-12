@@ -1,22 +1,14 @@
 <template>
-  <div class="tool bg-gray" id="tool">
+  <div class="tool" id="tool">
     <div class="action-bar">
       <div class="action-btn c-hand" :class="{'is-selected': selectedTool === 1}" @click="changeToolArea(1)">組件</div>
       <div class="action-btn c-hand" :class="{'is-selected': selectedTool === 2}" @click="changeToolArea(2)">樹</div>
     </div>
     <div :key="1" class="tool-area">
-      <ul class="tab tab-block">
-        <li class="tab-item" :class="{active: this.selectedTab === 0}" >
-          <a @click.prevent="handleChangeTab(0)" class="text-light">基础组件</a>
-        </li>
-        <li class="tab-item" :class="{active: this.selectedTab === 1}">
-          <a @click.prevent="handleChangeTab(1)" class="text-light">VANT UI</a>
-        </li>
-      </ul>
-      <ul class="menu bg-dark" v-if="this.selectedTab === 0">
-        <li class="divider" data-content="基础组件"></li>
+      <div class="header pl-2">基础组件</div>
+      <ul class="menu pl-0" v-if="this.selectedTab === 0">
         <li class="menu-item" v-for="comp in vantComponentList" :key="comp.objectId" @click="handleAddVantWidget(comp)">
-          <a>{{`${comp.name} ${comp.label}`}}</a>
+          <a class="text-gray">{{`${comp.name} ${comp.label}`}}</a>
         </li>
       </ul>
     </div>
@@ -83,6 +75,32 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  @import "node_modules/spectre.css/src/variables";
+
+  .tab {
+    border-bottom: none!important;
+    margin: 0!important;
+  }
+
+  .tab-item {
+    text-align: unset!important;
+    & > a {
+      border-bottom: none!important;
+    }
+  }
+
+  .menu {
+    transform: none!important;
+    background-color: transparent;
+  }
+
+  .menu-item {
+    & > a:hover {
+      background-color: $gray-color-dark!important;
+      color: $light-color!important;
+    }
+  }
+
 .tool {
   height: 100%;
   width: 300px;
@@ -95,7 +113,6 @@ export default {
 
 .tool-area {
   flex-grow: 1;
-  background-color: #202128;
 
   &.split {
     position: absolute;
@@ -106,15 +123,12 @@ export default {
   }
 }
 
-.float-panel {
-
-  .header {
-    height: 28px;
-    color: white;
-    background-color: #2a2d35;
-    font-size: 13px;
-    line-height: 28px;
-  }
+.header {
+  height: 28px;
+  color: white;
+  background-color: #2a2d35;
+  font-size: 13px;
+  line-height: 28px;
 }
 
 .action-bar {
