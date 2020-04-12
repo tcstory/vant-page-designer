@@ -8,10 +8,10 @@
 </template>
 
 <script>
+import { get } from 'loadsh'
 import { Subject } from 'rxjs'
 import Vue from 'vue'
 
-import defaultWidget from '@/defaultWidget.js'
 import vantWidget from '@/vantWidget'
 import Node from '@/components/Node'
 
@@ -19,13 +19,15 @@ import Queue from '../../queue'
 
 const q = new Queue()
 
-defaultWidget.install()
 vantWidget.install()
 
 const node$ = new Subject()
 
 Vue.prototype.node$ = node$
 Vue.prototype.q = q
+
+// todo 考虑是不是需要使用 ReplaySubject
+Vue.prototype.eventBus$ = new Subject()
 
 export default {
   name: 'App',
@@ -36,7 +38,8 @@ export default {
     return {
       node: null,
       selectedNode: null,
-      selectedContainer: null
+      selectedContainer: null,
+      eventMap: {}
     }
   },
   methods: {
@@ -51,6 +54,10 @@ export default {
         width: '100%',
         height: '100%'
       }
+    },
+    setEventMap (eventMap) {
+      this.eventMap = eventMap
+      console.log('setEventMap', this.eventMap)
     }
   },
   created () {
@@ -79,6 +86,16 @@ export default {
         })
       } else if (msg.type === 'SET_CONTAINER.order') {
         this.selectedContainer = this.nodeMap[msg.payload]
+      } else if (msg.type === 'UPDATE_EMIT_EVENT_VALUE.order') {
+        const { objectId, key, value } = msg.payload
+        const node = this.nodeMap[objectId]
+
+        node.eventValue[key] = value
+      } else if (msg.type === 'UPDATE_EVENT_VALUE.order') {
+        const { objectId, key, value } = msg.payload
+        const node = this.nodeMap[objectId]
+
+        node.eventValue[key] = value
       } else if (msg.type === 'UPDATE_PROP_VALUE.order') {
         let { objectId, key, value, type } = msg.payload
         const node = this.nodeMap[objectId]
@@ -90,7 +107,7 @@ export default {
       } else if (msg.type === 'UPDATE_STYLE_VALUE.order') {
         const { objectId, key, value } = msg.payload
         const node = this.nodeMap[objectId]
-        console.log('value', value)
+
         node.styleValue[key] = value
       } else if (msg.type === 'RELOAD.order') {
         this.node = msg.payload.node
@@ -109,6 +126,20 @@ export default {
             parent.children.splice(i, 1)
           }
         }
+      } else if (msg.type === 'UPDATE_EVENT_MAP.order') {
+        this.setEventMap(msg.payload)
+      }
+    })
+
+    this.eventBus$.subscribe((action) => {
+      const { sender, eventType } = action.payload
+      console.log('发生了啥', action, this.eventMap)
+      const receiverObj = get(this.eventMap, `${sender}.${eventType}`, {})
+
+      // todo 支持对于 style属性的修改
+      for (const receiver of Object.keys(receiverObj)) {
+        const { key, value } = receiverObj[receiver]
+        this.nodeMap[receiver].propsValue[key] = value
       }
     })
   },

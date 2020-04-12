@@ -1,14 +1,16 @@
 import Vue from 'vue'
 
-import VanButton from './widgets/VanButton'
-import VanImage from './widgets/VanImage'
-import VanRate from './widgets/VanRate'
+import Container from './widgets/Container/entry'
+import VaningButton from './widgets/VaningButton/entry'
+import VaningImage from './widgets/VaningImage/entry'
+import VaningRate from './widgets/VaningRate/entry'
 import { freeze } from './utils'
 
 const componentList = [
-  VanButton,
-  VanImage,
-  VanRate
+  Container,
+  VaningButton,
+  VaningImage,
+  VaningRate
 ]
 
 const store = {}
@@ -28,10 +30,32 @@ function install () {
 function createInstance (key) {
   const obj = freeze(store[key].info)
   obj.propsValue = store[key].getDefaultPropsValue()
-  obj.propsKey = Object.freeze(store[key].getPropsKey())
+  // obj.propsKey = Object.freeze(store[key].getPropsKey())
+  Object.defineProperty(obj, 'propsKey', {
+    value: store[key].getPropsKey(),
+    configurable: false,
+    enumerable: true,
+    writable: true
+  })
 
   obj.styleValue = store[key].getStyleValue()
-  obj.styleKey = store[key].getStyleKey()
+  // obj.styleKey = Object.freeze(store[key].getStyleKey())
+  Object.defineProperty(obj, 'styleKey', {
+    value: store[key].getStyleKey(),
+    configurable: false,
+    enumerable: true,
+    writable: true
+  })
+
+  obj.eventValue = store[key].getEventValue()
+  // obj.eventKey = Object.freeze(store[key].getEventKey())
+
+  Object.defineProperty(obj, 'eventKey', {
+    value: store[key].getEventKey(),
+    configurable: false,
+    enumerable: true,
+    writable: true
+  })
 
   return obj
 }

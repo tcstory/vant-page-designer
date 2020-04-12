@@ -38,5 +38,11 @@ export default {
       { key: 'padding', label: '内边距' },
       { key: 'flex', label: 'flex 布局' }
     ]
+  },
+  getEventKey () {
+    return []
+  },
+  getEventValue () {
+    return {}
   }
 }

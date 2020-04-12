@@ -5,11 +5,13 @@
       'no-children': !hasChildren
     }" @click.stop="handleSelect"  v-bind:style="getStyleValue">
       <template v-if="isContainer">
-        <component v-if="node" v-bind:is="node.id">
+        <component v-if="node" v-bind:is="node.id" :objectId="node.objectId">
           <node v-for="item in node.children" :key="item._createdTime" :node="item"/>
         </component>
       </template>
-      <component v-else v-bind:is="node.id" v-bind="getPropsValue"/>
+      <component v-else v-bind:is="node.id"
+                 v-bind:eventValue="getEventValue"
+                 v-bind:propsValue="getPropsValue" :objectId="node.objectId"/>
     </div>
 </template>
 
@@ -34,9 +36,10 @@ export default {
     }
   },
   computed: {
+    getEventValue () {
+      return this.node.eventValue
+    },
     getPropsValue () {
-      console.log('getPropsValue', this.node)
-
       return this.node.propsValue
     },
     getStyleValue () {

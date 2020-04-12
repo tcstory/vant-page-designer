@@ -21,9 +21,9 @@
 </template>
 
 <script>
+import { set } from 'loadsh'
 import FileSaver from 'file-saver'
 import Container from '@/widgets/Container/entry'
-import defaultWidget from '@/defaultWidget.js'
 import vantWidget from '@/vantWidget'
 
 import Toolbar from '@/components/Toolbar'
@@ -33,17 +33,16 @@ import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
 import { convertToJson, outputEntryFile } from '../utils'
 
-defaultWidget.install()
 vantWidget.install()
 const q = new Queue()
 
 function convertToTree (node) {
   const ret = node
-  !defaultWidget.createInstanceFromJson(ret) || vantWidget.createInstanceFromJson(ret)
+  vantWidget.createInstanceFromJson(ret)
 
   if (ret.children && ret.children.length) {
     for (const child of ret.children) {
-      !defaultWidget.createInstanceFromJson(ret) || vantWidget.createInstanceFromJson(child)
+      vantWidget.createInstanceFromJson(child)
     }
   }
 
@@ -60,9 +59,11 @@ export default {
   data () {
     return {
       node: null,
+      nodeList: [],
       selectedNode: null,
       selectedContainer: null,
-      reloadIframe: false
+      reloadIframe: false,
+      eventMap: {}
     }
   },
   methods: {
@@ -80,7 +81,7 @@ export default {
       q.setReceiver(this.$refs.receiver.contentWindow)
     },
     setRootNode () {
-      const node = defaultWidget.createInstance(Container.info.id)
+      const node = vantWidget.createInstance(Container.info.id)
 
       this.node$.next({
         type: 'ADD',
@@ -88,16 +89,40 @@ export default {
       })
     },
     initNodeMap () {
-      this.nodeMap = {}
+      this.setNodeMap()
+    },
+    setNodeMap (key, value) {
+      if (!key) {
+        this.nodeMap = {}
+      } else {
+        this.nodeMap[key] = value
+
+        this.node$.next({
+          type: 'UPDATE_NODE_MAP',
+          payload: this.nodeMap
+        })
+      }
+    },
+    setEventSender (sender, eventType, value) {
+      if (value) {
+        set(this.eventMap, `${sender}.${eventType}`, {})
+      } else {
+        set(this.eventMap, `${sender}.${eventType}`, null)
+      }
 
       this.node$.next({
-        type: 'SET_NODE_MAP',
-        payload: this.nodeMap
+        type: 'UPDATE_EVENT_MAP_SENDER',
+        payload: this.eventMap
       })
+    },
+    setEventReceiver (receiver, sender, eventType, key, toValue) {
+      set(this.eventMap, `${sender}.${eventType}.${receiver}`, { key, value: toValue })
+
+      q.sendMsg('UPDATE_EVENT_MAP.order', this.eventMap)
     },
     buildNodeMap (tree) {
       const traverse = (node) => {
-        this.nodeMap[node.objectId] = node
+        this.setNodeMap(node.objectId, node)
 
         if (node.children && node.children.length) {
           for (const child of node.children) {
@@ -134,12 +159,14 @@ export default {
           this.setReceiver()
           this.setRootNode()
         }
+      } else if (msg.type === 'EVENT_BUS.request') {
+        console.log('this.node', this.nodeMap)
       }
     })
 
     this.node$.subscribe((action) => {
       if (action.type === 'ADD') {
-        this.nodeMap[action.payload.objectId] = action.payload
+        this.setNodeMap(action.payload.objectId, action.payload)
 
         if (this.node === null) {
           q.sendMsg('ADD.order', action.payload)
@@ -174,13 +201,39 @@ export default {
         }
         q.sendMsg('DELETE_NODE.order', action.payload)
         this.node$.next({ type: 'DELETE_NODE_CONFIRM', payload: action.payload })
+      } else if (action.type === 'UPDATE_EVENT_VALUE') {
+        const { objectId, key, value } = action.payload
+        const node = this.nodeMap[objectId]
+
+        node.eventValue[key] = value
+      } else if (action.type === 'UPDATE_PROP_VALUE') {
+        let { objectId, key, value, type } = action.payload
+        const node = this.nodeMap[objectId]
+
+        if (type === 'number') {
+          value = Number(value)
+        }
+        node.propsValue[key] = value
+      } else if (action.type === 'UPDATE_STYLE_VALUE') {
+        const { objectId, key, value } = action.payload
+        const node = this.nodeMap[objectId]
+
+        node.styleValue[key] = value
+      } else if (action.type === 'SET_EVENT_MAP_SENDER') {
+        const { eventType, sender, value } = action.payload
+
+        this.setEventSender(sender, eventType, value)
+      } else if (action.type === 'SET_EVENT_MAP_RECEIVER') {
+        const { receiver, sender, eventType, key, toValue } = action.payload
+
+        this.setEventReceiver(receiver, sender, eventType, key, toValue)
       } else {
         // nothing
       }
     })
 
     this.node$.pipe(
-      filter(action => ['UPDATE_PROP_VALUE', 'UPDATE_STYLE_VALUE'].indexOf(action.type) !== -1),
+      filter(action => ['UPDATE_EVENT_VALUE', 'UPDATE_PROP_VALUE', 'UPDATE_STYLE_VALUE', 'UPDATE_EMIT_EVENT_VALUE'].indexOf(action.type) !== -1),
       debounceTime(150)
     ).subscribe((action) => {
       q.sendMsg(`${action.type}.order`, action.payload)

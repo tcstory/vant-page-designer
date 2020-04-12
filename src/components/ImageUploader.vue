@@ -1,20 +1,22 @@
 <template>
   <div class="image-loader">
-    <label class="form-label" :for="objectId">{{keyVal.label}}</label>
-    <div class="row">
-      <input class="form-input" type="text" :id="objectId" :value="src"
+    <div class="input-group">
+      <span class="input-group-addon addon-sm">{{keyVal.label}}</span>
+      <input class="form-input input-sm" type="text" :id="objectId" :value="src"
              v-on:input="onInput">
-      <label class="upload-btn btn btn-action s-circle" :for="'upload' + objectId"><i class="icon icon-upload"></i></label>
+      <label class="upload-btn btn btn-action btn-sm" :for="'upload' + objectId">
+        <i class="icon icon-upload"></i>
+      </label>
+    </div>
+    <div class="progress-bar">
+      <span class="text">上传进度</span>
+      <progress class="progress" :value="progress" max="100"></progress>
     </div>
     <input type="file"
            :id="'upload' + objectId"
            ref="uploader"
            style="opacity: 0;position: absolute;"
            accept="image/*">
-    <div class="progress-bar">
-      <span class="text">上传进度</span>
-      <progress class="progress" :value="progress" max="100"></progress>
-    </div>
   </div>
 </template>
 

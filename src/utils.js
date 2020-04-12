@@ -1,4 +1,4 @@
-import { camelCase } from 'loadsh'
+import { camelCase, uniqueId } from 'loadsh'
 
 export function createCompInfo (info) {
   return {
@@ -10,7 +10,7 @@ export function createCompInfo (info) {
 
 export function freeze (info) {
   const ret = {
-    objectId: Math.random(),
+    objectId: uniqueId('unique_'),
     ...info
   }
 

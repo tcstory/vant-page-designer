@@ -15,12 +15,6 @@
       </ul>
       <ul class="menu bg-dark" v-if="this.selectedTab === 0">
         <li class="divider" data-content="基础组件"></li>
-        <li class="menu-item" v-for="comp in defaultComponentList" :key="comp.objectId" @click="handleAddDefaultWidget(comp)">
-          <a>{{`${comp.name} ${comp.label}`}}</a>
-        </li>
-      </ul>
-      <ul class="menu bg-dark" v-if="this.selectedTab === 1">
-        <li class="divider" data-content="基础组件"></li>
         <li class="menu-item" v-for="comp in vantComponentList" :key="comp.objectId" @click="handleAddVantWidget(comp)">
           <a>{{`${comp.name} ${comp.label}`}}</a>
         </li>
@@ -38,7 +32,6 @@
 <script>
 import PerfectScrollbar from 'perfect-scrollbar'
 
-import defaultWidget from '../defaultWidget'
 import vantWidget from '../vantWidget'
 
 import NodeTree from './NodeTree'
@@ -51,7 +44,6 @@ export default {
   },
   data () {
     return {
-      defaultComponentList: [],
       vantComponentList: [],
       selectedTab: 0,
       selectedTool: 1
@@ -64,7 +56,7 @@ export default {
     handleAddDefaultWidget (comp) {
       this.node$.next({
         type: 'ADD',
-        payload: defaultWidget.createInstance(comp.id)
+        payload: vantWidget.createInstance(comp.id)
       })
     },
     handleAddVantWidget (comp) {
@@ -79,7 +71,6 @@ export default {
   },
   created () {
     this.vantComponentList = vantWidget.getComponents()
-    this.defaultComponentList = defaultWidget.getComponents()
   },
   mounted () {
     this.ps = new PerfectScrollbar('#split')

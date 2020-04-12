@@ -19,6 +19,9 @@ const system$ = new Subject()
 
 Vue.prototype.system$ = system$
 
+// todo 考虑是不是需要使用 ReplaySubject
+Vue.prototype.eventBus$ = new Subject()
+
 export default {
   name: 'App'
 }
@@ -27,7 +30,6 @@ export default {
 <style lang="scss">
 @import "~spectre.css";
 @import "~spectre.css/dist/spectre-exp.css";
-
 
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;

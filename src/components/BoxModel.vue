@@ -69,8 +69,6 @@ export default {
       // todo 判断设置的值是合法的, 再把事件广播出去
       const value = ev.target.value
 
-      this.node.styleValue[keyVal.key] = value
-
       this.node$.next({
         type: 'UPDATE_STYLE_VALUE',
         payload: {

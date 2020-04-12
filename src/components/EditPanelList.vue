@@ -3,6 +3,8 @@
     <edit-panel v-for="panel of panelList" class="edit-panel"
                 v-bind:is-active="panel.objectId === activePanel"
                 :panel="panel"
+                :senderList="senderList"
+                :event-map="eventMap"
                 :key="panel.objectId" />
   </div>
 </template>
@@ -20,7 +22,9 @@ export default {
     return {
       panelList: [],
       panelMap: {},
-      activePanel: -1
+      activePanel: -1,
+      senderList: [],
+      eventMap: {}
     }
   },
   methods: {
@@ -58,8 +62,37 @@ export default {
             this.panelList.splice(i, 1)
           }
         }
+      } else if (action.type === 'UPDATE_NODE_MAP') {
+        // todo 把真正触发了事件的给过滤出来
+        // this.senderList = Object.keys(action.payload)
+      } else if (action.type === 'UPDATE_EVENT_MAP') {
+        console.log('谁出发的吗')
+        // this.eventMap = action.payload
+      } else if (action.type === 'UPDATE_EVENT_MAP_SENDER') {
+        const arr = []
+        const payload = action.payload
+
+        for (const sender of Object.keys(payload)) {
+          const ret = { objectId: sender, eventTypeList: [] }
+          const eventMap = payload[sender]
+
+          for (const eventType of Object.keys(eventMap)) {
+            if (eventMap[eventType]) {
+              ret.eventTypeList.push(eventType)
+            }
+          }
+
+          if (ret.eventTypeList.length) {
+            arr.push(ret)
+          }
+        }
+        this.senderList = arr
+        console.log('我要更新了.....', this.senderList)
       }
     })
+  },
+  beforeDestroy () {
+    // 取消订阅
   }
 }
 </script>

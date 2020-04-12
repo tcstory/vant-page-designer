@@ -1,10 +1,10 @@
-import VanButton from 'vant/lib/button'
-import 'vant/lib/button/style'
-import { createCompInfo } from '../utils'
+import VaningButton from './index'
+
+import { createCompInfo } from '../../utils'
 
 const info = createCompInfo({
   version: 'latest',
-  name: VanButton.name,
+  name: VaningButton.name,
   label: '按钮',
   coverImg: ''
 })
@@ -13,7 +13,7 @@ info.id = info.name
 
 export default {
   info,
-  component: VanButton,
+  component: VaningButton,
   getDefaultPropsValue () {
     return {
       text: '按钮'
@@ -29,5 +29,17 @@ export default {
   },
   getStyleKey () {
     return []
+  },
+  getEventKey () {
+    return [
+      { key: 'click', label: 'click' },
+      { key: 'touchstart', label: 'touchstart' }
+    ]
+  },
+  getEventValue () {
+    return {
+      click: false,
+      touchstart: false
+    }
   }
 }

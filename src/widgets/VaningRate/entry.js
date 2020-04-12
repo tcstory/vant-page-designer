@@ -1,10 +1,10 @@
-import VanImage from 'vant/lib/rate'
-import 'vant/lib/rate/style'
-import { createCompInfo } from '../utils'
+import VaningRate from './index'
+
+import { createCompInfo } from '../../utils'
 
 const info = createCompInfo({
   version: 'latest',
-  name: VanImage.name,
+  name: VaningRate.name,
   label: '评分',
   coverImg: ''
 })
@@ -13,7 +13,7 @@ info.id = info.name
 
 export default {
   info,
-  component: VanImage,
+  component: VaningRate,
   getDefaultPropsValue () {
     return {
       value: 3,
@@ -31,5 +31,11 @@ export default {
   },
   getStyleKey () {
     return []
+  },
+  getEventKey () {
+    return []
+  },
+  getEventValue () {
+    return {}
   }
 }

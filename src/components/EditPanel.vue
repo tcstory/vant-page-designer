@@ -4,23 +4,28 @@
     <div class="id-row panel-row"><span class="text-primary">唯一标识: </span>{{panel.objectId}}</div>
     <div class="action-row panel-row">
       <span class="text-primary">操作: </span>
-      <button v-if="panel.parent" class="btn btn-action btn-primary btn-sm" @click="handleDelete"><i class="icon icon-delete"></i></button>
+      <button v-if="panel.parent" class="btn btn-action btn-primary btn-sm" @click="handleDelete">
+        <i class="icon icon-delete"></i>
+      </button>
     </div>
     <box-model :node="panel" />
     <prop-model :node="panel" />
+    <event-model :node="panel" :sender-list="senderList"/>
   </div>
 </template>
 
 <script>
 import BoxModel from './BoxModel'
 import PropModel from './PropModel'
+import EventModel from './EventModel'
 import PerfectScrollbar from 'perfect-scrollbar'
 
 export default {
   name: 'EditPanel',
   components: {
     BoxModel,
-    PropModel
+    PropModel,
+    EventModel
   },
   props: {
     panel: {
@@ -29,6 +34,14 @@ export default {
     },
     isActive: {
       type: Boolean,
+      required: true
+    },
+    senderList: {
+      type: Array,
+      required: true
+    },
+    eventMap: {
+      type: Object,
       required: true
     }
   },
