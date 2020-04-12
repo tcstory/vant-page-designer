@@ -16,7 +16,14 @@
     <main id="stage">
       <toolbar/>
       <article class="iphone-wrap">
-        <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
+        <div class="iframe-wrap">
+          <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"
+                  :style="{transform: `scale(${scalePercentage})`}"></iframe>
+          <div class="my-slider">
+            <p class="text-gray scale-num-text m-0">{{scaleNum + '%'}}</p>
+            <input class="slider tooltip" type="range" min="0" max="100" v-model="scaleNum">
+          </div>
+        </div>
         <file-reader />
       </article>
       <edit-panel-list />
@@ -67,7 +74,13 @@ export default {
       selectedNode: null,
       selectedContainer: null,
       reloadIframe: false,
-      eventMap: {}
+      eventMap: {},
+      scaleNum: 100
+    }
+  },
+  computed: {
+    scalePercentage () {
+      return this.scaleNum / 100
     }
   },
   methods: {
@@ -264,8 +277,6 @@ export default {
         this.reloadIframe = tree
       }
     })
-  },
-  mounted () {
   }
 }
 </script>
@@ -295,9 +306,10 @@ export default {
 
   .iphone-wrap {
     display: flex;
+    flex-grow: 1;
     justify-content: center;
     align-items: center;
-    width: 100%;
+    overflow-y: scroll;
     /*background-position: 0 0,13px 13px;*/
     /*background-size: 26px 26px;*/
     /*background-image: linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0),linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0);*/
@@ -307,5 +319,24 @@ export default {
     width: 375px;
     height: 667px;
     display: block;
+  }
+
+  .iframe-wrap {
+    position: relative;
+    padding-bottom: 60px;
+  }
+
+  .my-slider {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .scale-num-text {
+    font-size: 13px;
+    text-align: center;
+    position: relative;
+    bottom: -10px;
   }
 </style>
