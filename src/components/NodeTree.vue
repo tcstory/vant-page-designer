@@ -38,11 +38,14 @@ export default {
     }
   },
   created () {
-    this.node$.pipe(
+    this.subscription = this.node$.pipe(
       filter(action => action.type === 'SET_ROOT')
     ).subscribe((action) => {
       this.myNode = action.payload
     })
+  },
+  beforeDestroy () {
+    this.subscription.unsubscribe()
   },
   render: function (h) {
     return (

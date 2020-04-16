@@ -98,7 +98,7 @@ export default class Queue {
   }
 
   unsubscribe () {
-    this.subscription()
+    this.subscription.unsubscribe()
     this.event$ = null
     this.subscription = null
   }
