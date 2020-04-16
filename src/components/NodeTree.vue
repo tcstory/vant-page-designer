@@ -1,8 +1,12 @@
 <script type="text/jsx">
 import { filter } from 'rxjs/operators'
+import { VIcon } from 'vuetify/lib'
 
 export default {
   name: 'NodeTree',
+  components: {
+    'v-icon': VIcon
+  },
   data () {
     return {
       myNode: null
@@ -17,8 +21,12 @@ export default {
       return (
         <div class="item" key={item.objectId} style={{ 'padding-left': `${8 * indent}px` }}>
           <div class="content">
-            <div class="action-btn"/>
-            <div class="action-content">{item.name}</div>
+            {
+              item.children ? (<v-icon medium>folder</v-icon>) : (<v-icon medium>crop_square</v-icon>)
+            }
+            <div class="action-content">
+              {item.name}
+            </div>
           </div>
           {
             item.children && item.children.map((subItem) => {
@@ -50,14 +58,11 @@ export default {
 
 <style scoped lang="scss">
   .node-tree {
-    background-color: #202128;
   }
   .item {
     min-height: 28px;
-    /*width: 280px;*/
     border-radius: 4px;
     color: #e9ecf1;
-    /*padding-left: 14px;*/
 
     &.is-selected {
       background-color: #3e4149;

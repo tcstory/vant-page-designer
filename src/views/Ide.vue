@@ -1,34 +1,50 @@
+<!--<template>-->
+<!--  <div class="page">-->
+<!--    <header class="navbar" id="nav">-->
+<!--      <section class="navbar-section text-gray">-->
+<!--        Page Designer-->
+<!--      </section>-->
+<!--      <section class="navbar-section">-->
+<!--        <a href="#" class="btn btn-link action-btn " @click="handleExport">-->
+<!--          <span class="text-gray">导入</span>-->
+<!--        </a>-->
+<!--        <a href="#" class="btn btn-link action-btn text-gray" @click="handlePublish">-->
+<!--          <span class="text-gray">发布</span>-->
+<!--        </a>-->
+<!--      </section>-->
+<!--    </header>-->
+<!--    <main id="stage">-->
+<!--      <toolbar/>-->
+<!--      <article class="iphone-wrap">-->
+<!--        <div class="iframe-wrap">-->
+<!--          <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"-->
+<!--                  :style="{transform: `scale(${scalePercentage})`}"></iframe>-->
+<!--          <div class="my-slider">-->
+<!--            <p class="text-gray scale-num-text m-0">{{scaleNum + '%'}}</p>-->
+<!--            <input class="slider tooltip" type="range" min="0" max="100" v-model="scaleNum">-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <file-reader />-->
+<!--      </article>-->
+<!--      <edit-panel-list />-->
+<!--    </main>-->
+<!--  </div>-->
+<!--</template>-->
+
 <template>
-  <div class="page">
-    <header class="navbar" id="nav">
-      <section class="navbar-section text-gray">
-        Page Designer
-      </section>
-      <section class="navbar-section">
-        <a href="#" class="btn btn-link action-btn " @click="handleExport">
-          <span class="text-gray">导入</span>
-        </a>
-        <a href="#" class="btn btn-link action-btn text-gray" @click="handlePublish">
-          <span class="text-gray">发布</span>
-        </a>
-      </section>
-    </header>
-    <main id="stage">
+  <v-app>
+    <v-app-bar app dense>
+      <v-toolbar-title>Designer</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <v-btn depressed>保存</v-btn>
+      <v-btn depressed color="primary">发布</v-btn>
+    </v-app-bar>
+    <v-content>
       <toolbar/>
-      <article class="iphone-wrap">
-        <div class="iframe-wrap">
-          <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"
-                  :style="{transform: `scale(${scalePercentage})`}"></iframe>
-          <div class="my-slider">
-            <p class="text-gray scale-num-text m-0">{{scaleNum + '%'}}</p>
-            <input class="slider tooltip" type="range" min="0" max="100" v-model="scaleNum">
-          </div>
-        </div>
-        <file-reader />
-      </article>
-      <edit-panel-list />
-    </main>
-  </div>
+                <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"
+                        :style="{transform: `scale(${scalePercentage})`}"></iframe>
+    </v-content>
+  </v-app>
 </template>
 
 <script>
