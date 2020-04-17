@@ -48,7 +48,7 @@ export default {
   methods: {
     handleDelete () {
       this.node$.next({
-        type: 'DELETE_NODE',
+        type: 'DELETE_NODE.editPanel',
         payload: this.panel.objectId
       })
     }

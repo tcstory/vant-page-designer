@@ -61,7 +61,7 @@ export default {
       }
 
       this.node$.next({
-        type: 'UPDATE_PROP_VALUE',
+        type: 'UPDATE_PROP_VALUE.propModel',
         payload: {
           objectId: this.node.objectId,
           key: keyVal.key,

@@ -70,7 +70,7 @@ export default {
       const value = ev.target.value
 
       this.node$.next({
-        type: 'UPDATE_STYLE_VALUE',
+        type: 'UPDATE_STYLE_VALUE.boxModel',
         payload: {
           objectId: this.node.objectId,
           key: keyVal.key,

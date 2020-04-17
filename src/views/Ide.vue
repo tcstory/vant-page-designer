@@ -118,7 +118,7 @@ export default {
     setEventReceiver (receiver, sender, eventType, key, toValue) {
       set(this.eventMap, `${sender}.${eventType}.${receiver}`, { key, value: toValue })
 
-      q.sendMsg('UPDATE_EVENT_MAP.order', this.eventMap)
+      q.sendMsg('IDE/UPDATE_EVENT_MAP', this.eventMap)
     },
     buildNodeMap (tree) {
       const traverse = (node) => {
@@ -139,21 +139,21 @@ export default {
     this.initNodeMap()
 
     q.subscribe((msg) => {
-      if (msg.type === 'SET_SELECTED.request') {
+      if (msg.type === 'DEMO/SET_SELECTED') {
         this.selectedNode = this.nodeMap[msg.payload]
 
-        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
+        q.sendMsg('IDE/SET_SELECTED', this.selectedNode.objectId)
 
         this.node$.next({
-          type: 'EDIT_NODE',
+          type: 'EDIT_NODE.ide',
           payload: this.selectedNode
         })
-      } else if (msg.type === 'SET_CONTAINER.request') {
+      } else if (msg.type === 'DEMO/SET_CONTAINER') {
         this.selectedContainer = this.nodeMap[msg.payload]
-        q.sendMsg('SET_CONTAINER.order', this.selectedContainer.objectId)
-      } else if (msg.type === 'LOADED.request') {
+        q.sendMsg('IDE/SET_CONTAINER', this.selectedContainer.objectId)
+      } else if (msg.type === 'DEMO/LOADED') {
         if (this.reloadIframe) {
-          q.sendMsg('RELOAD.order', {
+          q.sendMsg('IDE/RELOAD', {
             node: this.node,
             nodeMap: this.nodeMap
           })
@@ -171,21 +171,21 @@ export default {
         this.setNodeMap(action.payload.objectId, action.payload)
 
         if (this.node === null) {
-          q.sendMsg('ADD.order', action.payload)
+          q.sendMsg('IDE/ADD', action.payload)
           this.node = action.payload
           this.node.parent = null
           this.node$.next({
-            type: 'SET_ROOT',
+            type: 'SET_ROOT.ide',
             payload: this.node
           })
         } else {
           if (this.selectedContainer.children) {
             this.selectedContainer.children.push(action.payload)
             action.payload.parent = this.selectedContainer
-            q.sendMsg('ADD.order', action.payload)
+            q.sendMsg('IDE/ADD', action.payload)
           }
         }
-      } else if (action.type === 'DELETE_NODE') {
+      } else if (['DELETE_NODE.nodeTree', 'DELETE_NODE.editPanel'].indexOf(action.type) !== -1) {
         const targetNode = this.nodeMap[action.payload]
 
         if (targetNode.parent === null) {
@@ -206,14 +206,14 @@ export default {
             parent.children.splice(i, 1)
           }
         }
-        q.sendMsg('DELETE_NODE.order', action.payload)
-        this.node$.next({ type: 'DELETE_NODE_CONFIRM', payload: deletedNodes })
+        q.sendMsg('IDE/DELETE_NODE', action.payload)
+        this.node$.next({ type: 'DELETE_NODE_CONFIRM.ide', payload: deletedNodes })
       } else if (action.type === 'UPDATE_EVENT_VALUE') {
         const { objectId, key, value } = action.payload
         const node = this.nodeMap[objectId]
 
         node.eventValue[key] = value
-      } else if (action.type === 'UPDATE_PROP_VALUE') {
+      } else if (action.type === 'UPDATE_PROP_VALUE.propModel') {
         let { objectId, key, value, type } = action.payload
         const node = this.nodeMap[objectId]
 
@@ -221,38 +221,46 @@ export default {
           value = Number(value)
         }
         node.propsValue[key] = value
-      } else if (action.type === 'UPDATE_STYLE_VALUE') {
+      } else if (action.type === 'UPDATE_STYLE_VALUE.boxModel') {
         const { objectId, key, value } = action.payload
         const node = this.nodeMap[objectId]
 
         node.styleValue[key] = value
-      } else if (action.type === 'SET_EVENT_MAP_SENDER') {
+      } else if (action.type === 'SET_EVENT_MAP_SENDER.eventModel') {
         const { eventType, sender, value } = action.payload
 
         this.setEventSender(sender, eventType, value)
-      } else if (action.type === 'SET_EVENT_MAP_RECEIVER') {
+      } else if (action.type === 'SET_EVENT_MAP_RECEIVER.eventModel') {
         const { receiver, sender, eventType, key, toValue } = action.payload
 
         this.setEventReceiver(receiver, sender, eventType, key, toValue)
       } else if (action.type === 'EDIT_NODE.nodeTree') {
         this.selectedNode = this.nodeMap[action.payload.objectId]
 
-        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
+        q.sendMsg('IDE/SET_SELECTED', this.selectedNode.objectId)
 
         this.node$.next({
-          type: 'EDIT_NODE',
+          type: 'EDIT_NODE.ide',
           payload: this.selectedNode
         })
+      } else if (action.type === 'SET_CONTAINER.nodeTree') {
+        this.selectedContainer = this.nodeMap[action.payload]
+        q.sendMsg('IDE/SET_CONTAINER', this.selectedContainer.objectId)
       } else {
         // nothing
       }
     })
 
     this.node$.pipe(
-      filter(action => ['UPDATE_EVENT_VALUE', 'UPDATE_PROP_VALUE', 'UPDATE_STYLE_VALUE', 'UPDATE_EMIT_EVENT_VALUE'].indexOf(action.type) !== -1),
+      filter(action => [
+        'UPDATE_EVENT_VALUE',
+        'UPDATE_PROP_VALUE.propModel',
+        'UPDATE_STYLE_VALUE.boxModel',
+        'UPDATE_EMIT_EVENT_VALUE'
+      ].indexOf(action.type) !== -1),
       debounceTime(150)
     ).subscribe((action) => {
-      q.sendMsg(`${action.type}.order`, action.payload)
+      q.sendMsg(`IDE/${action.type.split('.')[0]}`, action.payload)
     })
 
     this.system$.subscribe((action) => {

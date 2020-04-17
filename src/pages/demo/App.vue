@@ -57,7 +57,6 @@ export default {
     },
     setEventMap (eventMap) {
       this.eventMap = eventMap
-      console.log('setEventMap', this.eventMap)
     }
   },
   created () {
@@ -65,40 +64,40 @@ export default {
     q.setReceiver(window.parent)
 
     q.subscribe(msg => {
-      if (msg.type === 'ADD.order') {
+      if (msg.type === 'IDE/ADD') {
         this.nodeMap[msg.payload.objectId] = msg.payload
 
         if (this.node === null) {
           this.setRootNode(msg.payload)
 
-          q.sendMsg('SET_SELECTED.request', this.node.objectId)
-          q.sendMsg('SET_CONTAINER.request', this.node.objectId)
+          q.sendMsg('DEMO/SET_SELECTED', this.node.objectId)
+          q.sendMsg('DEMO/SET_CONTAINER', this.node.objectId)
         } else {
           if (this.selectedContainer.children) {
             this.selectedContainer.children.push(msg.payload)
             msg.payload.parent = this.selectedContainer
           }
         }
-      } else if (msg.type === 'SET_SELECTED.order') {
+      } else if (msg.type === 'IDE/SET_SELECTED') {
         this.selectedNode = this.nodeMap[msg.payload]
 
         this.node$.next({
-          type: 'SET_SELECTED.order',
+          type: 'SET_SELECTED.demo',
           payload: this.selectedNode
         })
-      } else if (msg.type === 'SET_CONTAINER.order') {
+      } else if (msg.type === 'IDE/SET_CONTAINER') {
         this.selectedContainer = this.nodeMap[msg.payload]
-      } else if (msg.type === 'UPDATE_EMIT_EVENT_VALUE.order') {
+      } else if (msg.type === 'IDE/UPDATE_EMIT_EVENT_VALUE') {
         const { objectId, key, value } = msg.payload
         const node = this.nodeMap[objectId]
 
         node.eventValue[key] = value
-      } else if (msg.type === 'UPDATE_EVENT_VALUE.order') {
+      } else if (msg.type === 'IDE/UPDATE_EVENT_VALUE') {
         const { objectId, key, value } = msg.payload
         const node = this.nodeMap[objectId]
 
         node.eventValue[key] = value
-      } else if (msg.type === 'UPDATE_PROP_VALUE.order') {
+      } else if (msg.type === 'IDE/UPDATE_PROP_VALUE') {
         let { objectId, key, value, type } = msg.payload
         const node = this.nodeMap[objectId]
 
@@ -106,17 +105,17 @@ export default {
           value = Number(value)
         }
         node.propsValue[key] = value
-      } else if (msg.type === 'UPDATE_STYLE_VALUE.order') {
+      } else if (msg.type === 'IDE/UPDATE_STYLE_VALUE') {
         const { objectId, key, value } = msg.payload
         const node = this.nodeMap[objectId]
 
         node.styleValue[key] = value
-      } else if (msg.type === 'RELOAD.order') {
+      } else if (msg.type === 'IDE/RELOAD') {
         this.node = msg.payload.node
         this.selectedNode = msg.payload.node
         this.selectedContainer = msg.payload.node
         this.nodeMap = msg.payload.nodeMap
-      } else if (msg.type === 'DELETE_NODE.order') {
+      } else if (msg.type === 'IDE/DELETE_NODE') {
         const targetNode = this.nodeMap[msg.payload]
         if (targetNode.children) {
           targetNode.children = []
@@ -128,7 +127,7 @@ export default {
             parent.children.splice(i, 1)
           }
         }
-      } else if (msg.type === 'UPDATE_EVENT_MAP.order') {
+      } else if (msg.type === 'IDE/UPDATE_EVENT_MAP') {
         this.setEventMap(msg.payload)
       }
     })
@@ -146,7 +145,7 @@ export default {
     })
   },
   mounted () {
-    this.q.sendMsg('LOADED.request', '')
+    this.q.sendMsg('DEMO/LOADED', '')
   }
 }
 </script>

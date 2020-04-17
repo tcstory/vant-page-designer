@@ -61,16 +61,16 @@ export default {
   },
   methods: {
     handleSelect () {
-      this.q.sendMsg('SET_SELECTED.request', this.node.objectId)
+      this.q.sendMsg('DEMO/SET_SELECTED', this.node.objectId)
 
       if (this.isContainer) {
-        this.q.sendMsg('SET_CONTAINER.request', this.node.objectId)
+        this.q.sendMsg('DEMO/SET_CONTAINER', this.node.objectId)
       }
     }
   },
   created () {
     this.subscribtion = this.node$.pipe(
-      filter(action => action.type === 'SET_SELECTED.order')
+      filter(action => action.type === 'SET_SELECTED.demo')
     ).subscribe((action) => {
       this.isSelected = action.payload === this.node
     })

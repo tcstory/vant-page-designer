@@ -97,7 +97,7 @@ export default {
       this.node.eventValue[keyVal.key] = value
 
       this.node$.next({
-        type: 'SET_EVENT_MAP_SENDER',
+        type: 'SET_EVENT_MAP_SENDER.eventModel',
         payload: {
           sender: this.node.objectId,
           eventType: keyVal.key,
@@ -124,7 +124,7 @@ export default {
       })
 
       this.node$.next({
-        type: 'SET_EVENT_MAP_RECEIVER',
+        type: 'SET_EVENT_MAP_RECEIVER.eventModel',
         payload: {
           receiver: this.node.objectId,
           sender: this.curSender.objectId,

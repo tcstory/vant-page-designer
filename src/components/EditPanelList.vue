@@ -56,7 +56,7 @@ export default {
   },
   created () {
     this.node$.pipe(
-      filter(action => action.type === 'EDIT_NODE')
+      filter(action => action.type === 'EDIT_NODE.ide')
     ).subscribe((action) => {
       const { objectId } = action.payload
 
@@ -77,7 +77,7 @@ export default {
     })
 
     this.node$.subscribe((action) => {
-      if (action.type === 'DELETE_NODE_CONFIRM') {
+      if (action.type === 'DELETE_NODE_CONFIRM.ide') {
         const deletedMap = keyBy(action.payload, 'objectId')
         const arr = []
 
