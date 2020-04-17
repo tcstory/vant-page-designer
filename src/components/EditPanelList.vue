@@ -23,6 +23,7 @@
 <script>
 import EditPanel from './EditPanel'
 import { filter } from 'rxjs/operators'
+import { keyBy } from 'loadsh'
 
 const tabName = {
   default: '1'
@@ -77,12 +78,18 @@ export default {
 
     this.node$.subscribe((action) => {
       if (action.type === 'DELETE_NODE_CONFIRM') {
+        const deletedMap = keyBy(action.payload, 'objectId')
+        const arr = []
+
         for (let i = 0; i < this.panelList.length; i++) {
           const target = this.panelList[i]
-          if (target.objectId === action.payload) {
-            this.panelList.splice(i, 1)
+
+          if (!deletedMap[target.objectId]) {
+            arr.push(target)
           }
         }
+
+        this.panelList = arr
       } else if (action.type === 'UPDATE_NODE_MAP') {
         // todo 把真正触发了事件的给过滤出来
         // this.senderList = Object.keys(action.payload)

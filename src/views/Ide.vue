@@ -191,9 +191,14 @@ export default {
         if (targetNode.parent === null) {
           return
         }
+
+        let deletedNodes = [targetNode]
+
         if (targetNode.children) {
+          deletedNodes = deletedNodes.concat(targetNode.children)
           targetNode.children = []
         }
+
         const parent = targetNode.parent
         for (let i = 0; i < parent.children.length; i++) {
           const child = parent.children[i]
@@ -202,7 +207,7 @@ export default {
           }
         }
         q.sendMsg('DELETE_NODE.order', action.payload)
-        this.node$.next({ type: 'DELETE_NODE_CONFIRM', payload: action.payload })
+        this.node$.next({ type: 'DELETE_NODE_CONFIRM', payload: deletedNodes })
       } else if (action.type === 'UPDATE_EVENT_VALUE') {
         const { objectId, key, value } = action.payload
         const node = this.nodeMap[objectId]
