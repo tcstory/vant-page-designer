@@ -1,6 +1,7 @@
 <template>
     <div class="node" :class="{
-      'is-container': isContainer,
+      'base-node': !isContainer,
+      'container-node': isContainer,
       'is-selected': isSelected,
       'no-children': !hasChildren
     }" @click.stop="handleSelect"  v-bind:style="getStyleValue">
@@ -12,17 +13,19 @@
       <component v-else v-bind:is="node.id"
                  v-bind:eventValue="getEventValue"
                  v-bind:propsValue="getPropsValue" :objectId="node.objectId"/>
+      <div v-if="!isContainer" class="circle num1"></div>
+      <div v-if="!isContainer" class="circle num2"></div>
+      <div v-if="!isContainer" class="circle num3"></div>
+      <div v-if="!isContainer" class="circle num4"></div>
     </div>
 </template>
 
 <script>
-import baseNode from '../mixin/baseNode'
 import Container from '../widgets/Container/entry'
 import { filter } from 'rxjs/operators'
 
 export default {
   name: 'Node',
-  mixins: [baseNode],
   props: {
     node: {
       type: Object,
@@ -77,23 +80,64 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  @import "node_modules/spectre.css/src/variables";
 
-  .node {
+  .base-node {
     display: inline-block;
-    box-shadow: inset 0 0 0 1px $secondary-color;
+    position: relative;
 
     &.is-selected {
-      box-shadow: inset 0 0 0 1px $primary-color;
+      outline: 1px dashed #009688;
+
+      .circle {
+        opacity: .5;
+      }
     }
+
+    .circle {
+      width: 12px;
+      height: 12px;
+      background-color: #fff;
+      border: 1px solid #59c7f9;
+      border-radius: 12px;
+      display: block;
+      position: absolute;
+      opacity: 0;
+
+      &.num1 {
+        left: -6px;
+        top: -6px;
+      }
+
+      &.num2 {
+        right: -6px;
+        top: -6px;
+      }
+
+      &.num3 {
+        right: -6px;
+        bottom: -6px;
+      }
+
+      &.num4 {
+        left: -6px;
+        bottom: -6px;
+      }
+    }
+
   }
 
-  .is-container {
+  .container-node {
     /*flex: 1;*/
     display: block;
 
     &.no-children {
       min-height: 64px;
+    }
+
+    &.is-selected {
+      box-shadow: inset 0 0 0 1px #009688;
+      background: radial-gradient(#B2DFDB 15%, transparent 16%) 0 0;
+      background-size:16px 16px;
     }
   }
 </style>

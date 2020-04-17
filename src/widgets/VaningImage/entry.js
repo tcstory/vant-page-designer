@@ -29,7 +29,9 @@ export default {
     ]
   },
   getStyleValue () {
-    return {}
+    return {
+      'font-size': 0, // 因为图片会被 node 包裹着, 设置字体为了是为了解决包裹图片的 div 的地图有空白像素的问题
+    }
   },
   getStyleKey () {
     return []
@@ -41,7 +43,7 @@ export default {
   },
   getEventValue () {
     return {
-      click: false,
+      click: false
     }
   }
 }
