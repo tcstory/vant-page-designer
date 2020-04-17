@@ -141,11 +141,13 @@ export default {
     q.subscribe((msg) => {
       if (msg.type === 'SET_SELECTED.request') {
         this.selectedNode = this.nodeMap[msg.payload]
+
+        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
+
         this.node$.next({
-          type: 'EDIT',
+          type: 'EDIT_NODE',
           payload: this.selectedNode
         })
-        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
       } else if (msg.type === 'SET_CONTAINER.request') {
         this.selectedContainer = this.nodeMap[msg.payload]
         q.sendMsg('SET_CONTAINER.order', this.selectedContainer.objectId)
@@ -227,6 +229,15 @@ export default {
         const { receiver, sender, eventType, key, toValue } = action.payload
 
         this.setEventReceiver(receiver, sender, eventType, key, toValue)
+      } else if (action.type === 'EDIT_NODE.nodeTree') {
+        this.selectedNode = this.nodeMap[action.payload.objectId]
+
+        q.sendMsg('SET_SELECTED.order', this.selectedNode.objectId)
+
+        this.node$.next({
+          type: 'EDIT_NODE',
+          payload: this.selectedNode
+        })
       } else {
         // nothing
       }

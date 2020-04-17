@@ -21,7 +21,7 @@
 </template>
 
 <script>
-import Container from '../widgets/Container/entry'
+import Container from '../Container/entry'
 import { filter } from 'rxjs/operators'
 
 export default {
@@ -60,21 +60,23 @@ export default {
     }
   },
   methods: {
-    handleDelete () {
-    },
     handleSelect () {
       this.q.sendMsg('SET_SELECTED.request', this.node.objectId)
+
       if (this.isContainer) {
         this.q.sendMsg('SET_CONTAINER.request', this.node.objectId)
       }
     }
   },
   created () {
-    this.node$.pipe(
+    this.subscribtion = this.node$.pipe(
       filter(action => action.type === 'SET_SELECTED.order')
     ).subscribe((action) => {
       this.isSelected = action.payload === this.node
     })
+  },
+  beforeDestroy () {
+    this.subscribtion.unsubscribe()
   }
 }
 </script>
@@ -97,7 +99,7 @@ export default {
       width: 12px;
       height: 12px;
       background-color: #fff;
-      border: 1px solid #59c7f9;
+      border: 1px solid #009688;
       border-radius: 12px;
       display: block;
       position: absolute;

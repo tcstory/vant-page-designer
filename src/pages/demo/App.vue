@@ -13,7 +13,7 @@ import { Subject } from 'rxjs'
 import Vue from 'vue'
 
 import vantWidget from '@/vantWidget'
-import Node from '@/components/Node'
+import Node from '@/widgets/Node/entry.vue'
 
 import Queue from '../../queue'
 
@@ -70,6 +70,7 @@ export default {
 
         if (this.node === null) {
           this.setRootNode(msg.payload)
+
           q.sendMsg('SET_SELECTED.request', this.node.objectId)
           q.sendMsg('SET_CONTAINER.request', this.node.objectId)
         } else {
@@ -80,6 +81,7 @@ export default {
         }
       } else if (msg.type === 'SET_SELECTED.order') {
         this.selectedNode = this.nodeMap[msg.payload]
+
         this.node$.next({
           type: 'SET_SELECTED.order',
           payload: this.selectedNode

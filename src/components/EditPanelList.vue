@@ -55,7 +55,7 @@ export default {
   },
   created () {
     this.node$.pipe(
-      filter(action => action.type === 'EDIT')
+      filter(action => action.type === 'EDIT_NODE')
     ).subscribe((action) => {
       const { objectId } = action.payload
 

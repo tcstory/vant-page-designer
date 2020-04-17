@@ -1,32 +1,59 @@
 <script type="text/jsx">
 import { filter } from 'rxjs/operators'
-import { VIcon } from 'vuetify/lib'
+import { VIcon, VBtn } from 'vuetify/lib'
 
 export default {
   name: 'NodeTree',
   components: {
-    'v-icon': VIcon
+    'v-icon': VIcon,
+    'v-btn': VBtn
   },
   data () {
     return {
-      myNode: null
+      myNode: null,
+      selectedNodeId: null
     }
   },
   methods: {
+    onClick (item) {
+      this.node$.next({
+        type: 'EDIT_NODE.nodeTree',
+        payload: item
+      })
+    },
+    handleDelete (item) {
+      this.node$.next({
+        type: 'DELETE_NODE',
+        payload: item.objectId
+      })
+    },
     createItem (item, indent) {
       if (!item) {
         return null
       }
 
+      let delBtn
+
+      if (item.parent !== null) {
+        delBtn = (
+          <v-btn icon small color={item.objectId === this.selectedNodeId ? ' pink' : ''}
+            onClick={this.handleDelete.bind(this, item)}>
+            <v-icon medium>delete</v-icon>
+          </v-btn>
+        )
+      }
+
       return (
-        <div class="item" key={item.objectId} style={{ 'padding-left': `${8 * indent}px` }}>
-          <div class="content">
+        <div class={{ item: true }} key={item.objectId} style={{ 'padding-left': `${8 * indent}px` }}>
+          <div class={{ content: true, 'is-selected': item.objectId === this.selectedNodeId }}
+            onClick={this.onClick.bind(this, item)}>
             {
               item.children ? (<v-icon medium>folder</v-icon>) : (<v-icon medium>crop_square</v-icon>)
             }
             <div class="action-content">
               {item.name}
             </div>
+            {delBtn}
           </div>
           {
             item.children && item.children.map((subItem) => {
@@ -38,14 +65,28 @@ export default {
     }
   },
   created () {
-    this.subscription = this.node$.pipe(
-      filter(action => action.type === 'SET_ROOT')
-    ).subscribe((action) => {
-      this.myNode = action.payload
-    })
+    this.subscriptions = []
+
+    this.subscriptions.push(
+      this.node$.pipe(
+        filter(action => action.type === 'SET_ROOT')
+      ).subscribe((action) => {
+        this.myNode = action.payload
+      })
+    )
+
+    this.subscriptions.push(
+      this.node$.pipe(
+        filter(action => action.type === 'EDIT_NODE')
+      ).subscribe((action) => {
+        this.selectedNodeId = action.payload.objectId
+      })
+    )
   },
   beforeDestroy () {
-    this.subscription.unsubscribe()
+    this.subscriptions.forEach((item) => {
+      item.unsubscribe()
+    })
   },
   render: function (h) {
     return (
@@ -66,15 +107,16 @@ export default {
     min-height: 28px;
     border-radius: 4px;
     color: #e9ecf1;
-
-    &.is-selected {
-      background-color: #3e4149;
-    }
   }
 
   .content {
     display: flex;
     margin-bottom: 4px;
+
+    &.is-selected {
+      background-color: rgb(33, 150, 243, 0.08);
+      color: rgb(33, 150, 243);
+    }
   }
 
   .action-btn {
@@ -86,7 +128,8 @@ export default {
 
   .action-content {
     flex-grow: 1;
-    line-height: 28px;
+    display: flex;
+    align-items: center;
     padding-left: 8px;
   }
 </style>
