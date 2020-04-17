@@ -1,36 +1,3 @@
-<!--<template>-->
-<!--  <div class="page">-->
-<!--    <header class="navbar" id="nav">-->
-<!--      <section class="navbar-section text-gray">-->
-<!--        Page Designer-->
-<!--      </section>-->
-<!--      <section class="navbar-section">-->
-<!--        <a href="#" class="btn btn-link action-btn " @click="handleExport">-->
-<!--          <span class="text-gray">导入</span>-->
-<!--        </a>-->
-<!--        <a href="#" class="btn btn-link action-btn text-gray" @click="handlePublish">-->
-<!--          <span class="text-gray">发布</span>-->
-<!--        </a>-->
-<!--      </section>-->
-<!--    </header>-->
-<!--    <main id="stage">-->
-<!--      <toolbar/>-->
-<!--      <article class="iphone-wrap">-->
-<!--        <div class="iframe-wrap">-->
-<!--          <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"-->
-<!--                  :style="{transform: `scale(${scalePercentage})`}"></iframe>-->
-<!--          <div class="my-slider">-->
-<!--            <p class="text-gray scale-num-text m-0">{{scaleNum + '%'}}</p>-->
-<!--            <input class="slider tooltip" type="range" min="0" max="100" v-model="scaleNum">-->
-<!--          </div>-->
-<!--        </div>-->
-<!--        <file-reader />-->
-<!--      </article>-->
-<!--      <edit-panel-list />-->
-<!--    </main>-->
-<!--  </div>-->
-<!--</template>-->
-
 <template>
   <v-app>
     <v-app-bar app dense>
@@ -40,9 +7,14 @@
       <v-btn depressed color="primary">发布</v-btn>
     </v-app-bar>
     <v-content>
-      <toolbar/>
-                <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"
-                        :style="{transform: `scale(${scalePercentage})`}"></iframe>
+      <div class="stage">
+        <toolbar/>
+        <div class="iframe-wrap">
+          <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
+        </div>
+        <file-reader />
+        <edit-panel-list />
+      </div>
     </v-content>
   </v-app>
 </template>
@@ -92,11 +64,6 @@ export default {
       reloadIframe: false,
       eventMap: {},
       scaleNum: 100
-    }
-  },
-  computed: {
-    scalePercentage () {
-      return this.scaleNum / 100
     }
   },
   methods: {
@@ -298,37 +265,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  @import "node_modules/spectre.css/src/variables";
 
-  .page {
+  .stage {
+    display: flex;
     height: 100%;
-    background-color: #202128;
-  }
-
-  $nav-height: 44px;
-
-  #nav {
-    height: $nav-height;
-  }
-
-  #stage {
-    height: calc(100% - #{$nav-height});
-    display: flex;
-  }
-
-  .action-btn {
-    color: white!important;
-  }
-
-  .iphone-wrap {
-    display: flex;
-    flex-grow: 1;
-    justify-content: center;
-    align-items: center;
-    overflow-y: scroll;
-    /*background-position: 0 0,13px 13px;*/
-    /*background-size: 26px 26px;*/
-    /*background-image: linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0),linear-gradient(45deg,#f5f5f5 25%,transparent 0,transparent 75%,#f5f5f5 0);*/
   }
 
   #iphone {
@@ -339,20 +279,11 @@ export default {
 
   .iframe-wrap {
     position: relative;
+    padding-top: 16px;
     padding-bottom: 60px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
   }
 
-  .my-slider {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-  }
-
-  .scale-num-text {
-    font-size: 13px;
-    text-align: center;
-    position: relative;
-    bottom: -10px;
-  }
 </style>

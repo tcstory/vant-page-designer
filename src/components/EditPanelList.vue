@@ -1,17 +1,32 @@
 <template>
-  <div class="edit-panel-wrap p-2">
-    <edit-panel v-for="panel of panelList" class="edit-panel"
-                v-bind:is-active="panel.objectId === activePanel"
-                :panel="panel"
-                :senderList="senderList"
-                :event-map="eventMap"
-                :key="panel.objectId" />
-  </div>
+  <v-card class="edit-panel-list">
+    <v-tabs
+      :centered="true"
+      v-model="curTab"
+      dark
+    >
+      <v-tab :key="tabName.default">基础设置</v-tab>
+    </v-tabs>
+    <v-tabs-items v-model="curTab">
+      <v-tab-item :key="tabName.default">
+        <edit-panel v-for="panel of panelList" class="edit-panel"
+                    v-bind:is-active="panel.objectId === activePanel"
+                    :panel="panel"
+                    :senderList="senderList"
+                    :event-map="eventMap"
+                    :key="panel.objectId" />
+      </v-tab-item>
+    </v-tabs-items>
+  </v-card>
 </template>
 
 <script>
 import EditPanel from './EditPanel'
 import { filter } from 'rxjs/operators'
+
+const tabName = {
+  default: '1'
+}
 
 export default {
   name: 'EditPanelList',
@@ -24,7 +39,13 @@ export default {
       panelMap: {},
       activePanel: -1,
       senderList: [],
-      eventMap: {}
+      eventMap: {},
+      curTab: tabName.default
+    }
+  },
+  computed: {
+    tabName () {
+      return tabName
     }
   },
   methods: {
@@ -98,9 +119,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .edit-panel-wrap {
+  .edit-panel-list {
     height: 100%;
-    width: 320px;
+    width: 280px;
     flex-shrink: 0;
     flex-grow: 0;
     position: relative;

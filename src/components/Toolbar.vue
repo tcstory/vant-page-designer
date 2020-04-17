@@ -59,7 +59,7 @@ export default {
       vantComponentList: [],
       selectedTab: 0,
       selectedTool: 1,
-      curTab: tabName.default,
+      curTab: tabName.default
     }
   },
   computed: {
