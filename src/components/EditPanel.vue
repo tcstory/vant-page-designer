@@ -5,7 +5,7 @@
       <div class="id-row panel-row"><span class="primary--text">唯一标识: &nbsp;</span>{{panel.objectId}}</div>
       <div class="action-row panel-row">
         <span class="primary--text">操作: &nbsp;</span>
-        <v-btn icon small @click="handleDelete" v-if="panel.parent">
+        <v-btn icon small @click="handleDelete" v-if="panel.parent" class="del-btn">
           <v-icon medium>delete</v-icon>
         </v-btn>
       </div>
@@ -125,5 +125,11 @@ export default {
 
   .edit-panel-list {
     flex-grow: 1;
+  }
+
+  .del-btn {
+    &:hover {
+      color: #E91E63;
+    }
   }
 </style>

@@ -47,7 +47,7 @@ export default {
 
       if (item.parent !== null) {
         delBtn = (
-          <v-btn icon small color={item.objectId === this.selectedNodeId ? ' pink' : ''}
+          <v-btn icon small class="del-btn"
             vOn:click_stop_prevent={this.handleDelete.bind(this, item)}>
             <v-icon medium>delete</v-icon>
           </v-btn>
@@ -153,5 +153,11 @@ export default {
     display: flex;
     align-items: center;
     padding-left: 8px;
+  }
+
+  .del-btn {
+    &:hover {
+      color: #E91E63;
+    }
   }
 </style>
