@@ -223,7 +223,7 @@ export default {
           value = Number(value)
         }
         node.propsValue[key] = value
-      } else if (action.type === 'UPDATE_STYLE_VALUE.boxModel') {
+      } else if (action.type === 'UPDATE_STYLE_VALUE.notify') {
         const { objectId, key, value } = action.payload
         const node = this.nodeMap[objectId]
 
@@ -257,7 +257,7 @@ export default {
       filter(action => [
         'UPDATE_EVENT_VALUE',
         'UPDATE_PROP_VALUE.propModel',
-        'UPDATE_STYLE_VALUE.boxModel',
+        'UPDATE_STYLE_VALUE.notify',
         'UPDATE_EMIT_EVENT_VALUE'
       ].indexOf(action.type) !== -1),
       debounceTime(150)

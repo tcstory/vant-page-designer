@@ -11,7 +11,7 @@
       </div>
     </v-card>
 
-    <v-card class="edit-panel-list">
+    <v-card class="edit-panel-area">
       <v-tabs
         :centered="true"
         v-model="curTab"
@@ -21,11 +21,13 @@
         <v-tab :key="tabName.prop">属性</v-tab>
         <v-tab :key="tabName.event">事件</v-tab>
       </v-tabs>
-      <v-tabs-items v-model="curTab">
-        <v-tab-item :key="tabName.style"><box-model :node="panel" /></v-tab-item>
-        <v-tab-item :key="tabName.prop"><prop-model :node="panel" /></v-tab-item>
-        <v-tab-item :key="tabName.event"><event-model :node="panel" :sender-list="senderList"/></v-tab-item>
-      </v-tabs-items>
+      <div style="padding: 0 10px;">
+        <v-tabs-items v-model="curTab">
+          <v-tab-item :key="tabName.style"><box-model :node="panel" /></v-tab-item>
+          <v-tab-item :key="tabName.prop"><prop-model :node="panel" /></v-tab-item>
+          <v-tab-item :key="tabName.event"><event-model :node="panel" :sender-list="senderList"/></v-tab-item>
+        </v-tabs-items>
+      </div>
     </v-card>
   </div>
 </template>
@@ -34,7 +36,6 @@
 import BoxModel from './BoxModel'
 import PropModel from './PropModel'
 import EventModel from './EventModel'
-import PerfectScrollbar from 'perfect-scrollbar'
 
 const tabName = {
   style: '1',
@@ -84,14 +85,7 @@ export default {
         payload: this.panel.objectId
       })
     }
-  },
-  mounted () {
-    this.ps = new PerfectScrollbar(this.$refs.panel)
-  },
-  beforeDestroy () {
-    this.ps.destroy()
   }
-
 }
 </script>
 
@@ -117,13 +111,14 @@ export default {
     height: 32px;
     display: flex;
     align-items: center;
+    padding: 8px 10px 0;
   }
 
   .id-row {
     height: 22px;
   }
 
-  .edit-panel-list {
+  .edit-panel-area {
     flex-grow: 1;
   }
 

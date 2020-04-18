@@ -1,11 +1,9 @@
 <template>
-  <div class="box-model mb-2">
-    <p @click="handleClick" class="c-hand title-bar">
-      盒模型
-      <i class="icon icon-arrow-up" v-if="show"></i>
-      <i class="icon icon-arrow-down" v-if="!show"></i>
+  <div class="box-model">
+    <p class="title-bar">
+      <span class="grey--text">盒模型</span>
     </p>
-    <div class="margin-border" v-if="show">
+    <div class="margin-border">
       <span class="dot dot-top">{{fullMargin[0]}}</span>
       <span class="dot dot-right">{{fullMargin[1]}}</span>
       <span class="dot dot-bottom">{{fullMargin[2]}}</span>
@@ -18,18 +16,22 @@
         <div class="content-border">{{fullContent}}</div>
       </div>
     </div>
-    <template v-if="show && node.parent">
-      <div class="form-group" v-for="keyVal of node.styleKey" :key="keyVal.key">
-        <label class="form-label" :for="keyVal.key">{{keyVal.label}}</label>
-        <input class="form-input" type="text" :id="keyVal.key" :value="node.styleValue[keyVal.key]"
-               v-on:input="onStyleInput($event, keyVal)">
-      </div>
-    </template>
+    <div class="input-group" v-if="node.parent">
+      <v-text-field
+        outlined
+        dense
+        autocomplete="off"
+        v-for="keyVal of node.styleKey"
+        :key="keyVal.key"
+        :label="keyVal.label"
+        :value="node.styleValue[keyVal.key]"
+        v-on:input="onStyleInput($event, keyVal)"
+      ></v-text-field>
+    </div>
   </div>
 </template>
 
 <script>
-import { filter } from 'rxjs/operators'
 
 export default {
   name: 'BoxModel',
@@ -41,12 +43,10 @@ export default {
   },
   data () {
     return {
-      show: true
     }
   },
   computed: {
     fullContent () {
-      console.log('this.node', this.node)
       const styleValue = this.node.styleValue
       if (styleValue.width && styleValue.height) {
         return ''
@@ -62,15 +62,10 @@ export default {
     }
   },
   methods: {
-    handleClick () {
-      this.show = !this.show
-    },
-    onStyleInput (ev, keyVal) {
+    onStyleInput (value, keyVal) {
       // todo 判断设置的值是合法的, 再把事件广播出去
-      const value = ev.target.value
-
       this.node$.next({
-        type: 'UPDATE_STYLE_VALUE.boxModel',
+        type: 'UPDATE_STYLE_VALUE.notify',
         payload: {
           objectId: this.node.objectId,
           key: keyVal.key,
@@ -79,13 +74,6 @@ export default {
       })
     }
   },
-  created () {
-    this.node$.pipe(
-      filter(action => action.type === 'UPDATE_STYLE_VALUE')
-    ).subscribe((action) => {
-      console.log('action', action)
-    })
-  }
 }
 </script>
 
@@ -93,10 +81,7 @@ export default {
   .title-bar {
     font-size: 14px;
     height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #2a2d35;
+    text-align: center;
   }
 
   .box {
@@ -146,7 +131,7 @@ export default {
   .margin-border {
     @extend .box;
 
-    margin: 0 auto;
+    margin: 0 auto 16px;
     width: 180px;
     height: 120px;
     background-color: #fdffdf;
