@@ -48,7 +48,7 @@ export default {
       if (item.parent !== null) {
         delBtn = (
           <v-btn icon small color={item.objectId === this.selectedNodeId ? ' pink' : ''}
-            onClick={this.handleDelete.bind(this, item)}>
+            vOn:click_stop_prevent={this.handleDelete.bind(this, item)}>
             <v-icon medium>delete</v-icon>
           </v-btn>
         )
