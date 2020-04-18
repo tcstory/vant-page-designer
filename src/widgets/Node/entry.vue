@@ -3,7 +3,8 @@
       'base-node': !isContainer,
       'container-node': isContainer,
       'is-selected': isSelected,
-      'no-children': !hasChildren
+      'no-children': !hasChildren,
+      'is-root': !node.parent
     }" @click.stop="handleSelect"  v-bind:style="getStyleValue">
       <template v-if="isContainer">
         <component v-if="node" v-bind:is="node.id" :objectId="node.objectId">
@@ -131,6 +132,12 @@ export default {
   .container-node {
     /*flex: 1;*/
     display: block;
+    background: radial-gradient(#B2DFDB 15%, transparent 16%) 0 0;
+    background-size:16px 16px;
+
+    &.is-root {
+      background: none;
+    }
 
     &.no-children {
       min-height: 64px;
@@ -138,8 +145,6 @@ export default {
 
     &.is-selected {
       outline: 1px dashed #009688;
-      background: radial-gradient(#B2DFDB 15%, transparent 16%) 0 0;
-      background-size:16px 16px;
     }
   }
 </style>
