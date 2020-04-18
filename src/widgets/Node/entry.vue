@@ -137,7 +137,7 @@ export default {
     }
 
     &.is-selected {
-      box-shadow: inset 0 0 0 1px #009688;
+      outline: 1px dashed #009688;
       background: radial-gradient(#B2DFDB 15%, transparent 16%) 0 0;
       background-size:16px 16px;
     }

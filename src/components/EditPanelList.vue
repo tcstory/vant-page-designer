@@ -1,23 +1,12 @@
 <template>
-  <v-card class="edit-panel-list">
-    <v-tabs
-      :centered="true"
-      v-model="curTab"
-      dark
-    >
-      <v-tab :key="tabName.default">基础设置</v-tab>
-    </v-tabs>
-    <v-tabs-items v-model="curTab">
-      <v-tab-item :key="tabName.default">
-        <edit-panel v-for="panel of panelList" class="edit-panel"
-                    v-bind:is-active="panel.objectId === activePanel"
-                    :panel="panel"
-                    :senderList="senderList"
-                    :event-map="eventMap"
-                    :key="panel.objectId" />
-      </v-tab-item>
-    </v-tabs-items>
-  </v-card>
+  <div class="edit-panel-list">
+    <edit-panel v-for="panel of panelList" class="edit-panel"
+                v-bind:is-active="panel.objectId === activePanel"
+                :panel="panel"
+                :senderList="senderList"
+                :event-map="eventMap"
+                :key="panel.objectId" />
+  </div>
 </template>
 
 <script>
@@ -26,7 +15,9 @@ import { filter } from 'rxjs/operators'
 import { keyBy } from 'loadsh'
 
 const tabName = {
-  default: '1'
+  style: '1',
+  prop: '2',
+  event: '3'
 }
 
 export default {

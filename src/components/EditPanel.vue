@@ -1,16 +1,32 @@
 <template>
-  <div class="edit-panel p-2" :class="{active: isActive}" ref="panel">
-    <h4>{{panel.name}}</h4>
-    <div class="id-row panel-row"><span class="text-primary">唯一标识: </span>{{panel.objectId}}</div>
-    <div class="action-row panel-row">
-      <span class="text-primary">操作: </span>
-      <button v-if="panel.parent" class="btn btn-action btn-primary btn-sm" @click="handleDelete">
-        <i class="icon icon-delete"></i>
-      </button>
-    </div>
-    <box-model :node="panel" />
-    <prop-model :node="panel" />
-    <event-model :node="panel" :sender-list="senderList"/>
+  <div class="edit-panel" :class="{active: isActive}" ref="panel">
+    <v-card>
+      <div class="id-row panel-row"><span class="primary--text">组件名字: &nbsp;</span>{{panel.name}}</div>
+      <div class="id-row panel-row"><span class="primary--text">唯一标识: &nbsp;</span>{{panel.objectId}}</div>
+      <div class="action-row panel-row">
+        <span class="primary--text">操作: &nbsp;</span>
+        <v-btn icon small @click="handleDelete" v-if="panel.parent">
+          <v-icon medium>delete</v-icon>
+        </v-btn>
+      </div>
+    </v-card>
+
+    <v-card class="edit-panel-list">
+      <v-tabs
+        :centered="true"
+        v-model="curTab"
+        dark
+      >
+        <v-tab :key="tabName.style">样式</v-tab>
+        <v-tab :key="tabName.prop">属性</v-tab>
+        <v-tab :key="tabName.event">事件</v-tab>
+      </v-tabs>
+      <v-tabs-items v-model="curTab">
+        <v-tab-item :key="tabName.style"><box-model :node="panel" /></v-tab-item>
+        <v-tab-item :key="tabName.prop"><prop-model :node="panel" /></v-tab-item>
+        <v-tab-item :key="tabName.event"><event-model :node="panel" :sender-list="senderList"/></v-tab-item>
+      </v-tabs-items>
+    </v-card>
   </div>
 </template>
 
@@ -19,6 +35,12 @@ import BoxModel from './BoxModel'
 import PropModel from './PropModel'
 import EventModel from './EventModel'
 import PerfectScrollbar from 'perfect-scrollbar'
+
+const tabName = {
+  style: '1',
+  prop: '2',
+  event: '3'
+}
 
 export default {
   name: 'EditPanel',
@@ -43,6 +65,16 @@ export default {
     eventMap: {
       type: Object,
       required: true
+    }
+  },
+  computed: {
+    tabName () {
+      return tabName
+    }
+  },
+  data () {
+    return {
+      curTab: tabName.style
     }
   },
   methods: {
@@ -71,6 +103,9 @@ export default {
     right: 0;
     top: 0;
     bottom: 0;
+    font-size: 14px;
+    display: flex;
+    flex-direction: column;
 
     &.active {
       opacity: 1;
@@ -85,7 +120,10 @@ export default {
   }
 
   .id-row {
-    font-size: 13px;
     height: 22px;
+  }
+
+  .edit-panel-list {
+    flex-grow: 1;
   }
 </style>
