@@ -2,11 +2,15 @@
 import { filter } from 'rxjs/operators'
 import { VIcon, VBtn } from 'vuetify/lib'
 
+import simplebar from 'simplebar-vue'
+import 'simplebar/dist/simplebar.min.css'
+
 export default {
   name: 'NodeTree',
   components: {
     'v-icon': VIcon,
-    'v-btn': VBtn
+    'v-btn': VBtn,
+    simplebar
   },
   data () {
     return {
@@ -90,6 +94,11 @@ export default {
       })
     )
   },
+  mounted () {
+    const { width, height } = window.getComputedStyle(this.$refs.nodeTree.$el, null)
+    this.$refs.nodeTree.$el.style.width = width
+    this.$refs.nodeTree.$el.style.height = height
+  },
   beforeDestroy () {
     this.subscriptions.forEach((item) => {
       item.unsubscribe()
@@ -97,17 +106,23 @@ export default {
   },
   render: function (h) {
     return (
-      <div class="node-tree p-1">
-        {
-          this.createItem(this.myNode, 0)
-        }
-      </div>
+      <simplebar data-simplebar-auto-hide="false" class="wrap" ref="nodeTree">
+        <div className="node-tree p-1">
+          {
+            this.createItem(this.myNode, 0)
+          }
+        </div>
+      </simplebar>
     )
   }
 }
 </script>
 
 <style scoped lang="scss">
+  .wrap {
+    overflow-x: hidden;
+    flex-grow: 1;
+  }
   .node-tree {
   }
   .item {

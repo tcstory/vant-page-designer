@@ -32,6 +32,8 @@ import Queue from '../queue'
 import { filter, debounceTime } from 'rxjs/operators'
 import { convertToJson, outputEntryFile } from '../utils'
 
+import 'perfect-scrollbar/dist/perfect-scrollbar.min.js'
+
 vantWidget.install()
 const q = new Queue()
 

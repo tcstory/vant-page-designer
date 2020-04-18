@@ -111,4 +111,9 @@ export default {
     bottom: 0;
     height: 50%;
   }
+
+  .float-panel-bottom {
+    display: flex;
+    flex-direction: column;
+  }
 </style>

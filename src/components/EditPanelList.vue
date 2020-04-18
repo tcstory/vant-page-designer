@@ -90,6 +90,7 @@ export default {
         }
 
         this.panelList = arr
+        this.activePanel = -1
       } else if (action.type === 'UPDATE_NODE_MAP') {
         // todo 把真正触发了事件的给过滤出来
         // this.senderList = Object.keys(action.payload)
