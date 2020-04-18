@@ -158,7 +158,7 @@ body {
 </style>
 
 <style scoped lang="scss">
-@import "~vant/lib/style/reset.css";
+@import "./reset.css";
 #iphone {
   width: 100%;
   height: 100%;
