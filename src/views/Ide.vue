@@ -228,6 +228,8 @@ export default {
         const node = this.nodeMap[objectId]
 
         node.styleValue[key] = value
+        console.log('objectId, key, value', node.styleValue)
+
       } else if (action.type === 'SET_EVENT_MAP_SENDER.eventModel') {
         const { eventType, sender, value } = action.payload
 

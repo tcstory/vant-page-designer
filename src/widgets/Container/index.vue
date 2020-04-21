@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div class="container" v-bind:style="styleValue">
     <slot></slot>
   </div>
 </template>
@@ -9,6 +9,10 @@
 export default {
   name: 'Container',
   props: {
+    objectId: {
+      type: String,
+      required: true
+    },
     styleValue: {
       type: Object,
       default () {

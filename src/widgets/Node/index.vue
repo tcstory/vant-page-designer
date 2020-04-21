@@ -17,6 +17,7 @@
 </template>
 
 <script>
+// todo fix v-bind:style="getStyleValue"
 import Container from '../Container/entry'
 
 export default {

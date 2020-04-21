@@ -21,20 +21,25 @@
         outlined
         dense
         autocomplete="off"
-        v-for="keyVal of node.styleKey"
+        v-for="keyVal of myStyleKey"
         :key="keyVal.key"
         :label="keyVal.label"
         :value="node.styleValue[keyVal.key]"
         v-on:input="onStyleInput($event, keyVal)"
       ></v-text-field>
+      <display-setting :node="node"/>
     </div>
   </div>
 </template>
 
 <script>
+import DisplaySetting from './DisplaySetting'
 
 export default {
   name: 'BoxModel',
+  components: {
+    'display-setting': DisplaySetting
+  },
   props: {
     node: {
       type: Object,
@@ -59,6 +64,9 @@ export default {
     },
     fullMargin () {
       return ['?', '?', '?', '?']
+    },
+    myStyleKey () {
+      return this.node.styleKey.filter((item) => item.key !== 'display')
     }
   },
   methods: {
@@ -73,7 +81,7 @@ export default {
         }
       })
     }
-  },
+  }
 }
 </script>
 

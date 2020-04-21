@@ -27,7 +27,13 @@ export default {
       width: '',
       height: '',
       margin: '',
-      padding: ''
+      padding: '',
+      display: '',
+      'flex-direction': '',
+      'flex-wrap': '',
+      'justify-content': '',
+      'align-items': '',
+      'align-content': ''
     }
   },
   getStyleKey () {
@@ -36,7 +42,7 @@ export default {
       { key: 'height', label: '高度' },
       { key: 'margin', label: '外边距' },
       { key: 'padding', label: '内边距' },
-      { key: 'flex', label: 'flex 布局' }
+      { key: 'display', label: 'display', options: ['block', 'inline-block', 'flex'] }
     ]
   },
   getEventKey () {
