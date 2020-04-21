@@ -143,6 +143,7 @@ export default {
 
     &.no-children {
       min-height: 64px;
+      min-width: 64px;
     }
 
     &.is-selected {
