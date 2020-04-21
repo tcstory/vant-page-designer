@@ -8,7 +8,7 @@
     }" @click.stop="handleSelect">
       <template v-if="isContainer">
         <component v-if="node" v-bind:is="node.id" :objectId="node.objectId" :styleValue="getStyleValue">
-          <node v-for="item in node.children" :key="item._createdTime" :node="item"/>
+          <node v-for="item in node.children" :key="item.objectId" :node="item"/>
         </component>
       </template>
       <component v-else v-bind:is="node.id"
@@ -137,6 +137,8 @@ export default {
 
     &.is-root {
       background: none;
+      width: 100%;
+      height: 100%;
     }
 
     &.no-children {

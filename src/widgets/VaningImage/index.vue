@@ -1,5 +1,5 @@
 <template>
-  <van-image v-bind="propsValue" v-on:click="onClick" />
+  <van-image v-bind="propsValue" v-on:click="onClick" class="img"/>
 </template>
 
 <script>
@@ -39,5 +39,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .img {
+    vertical-align: top;
+  }
 </style>
