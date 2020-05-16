@@ -1,5 +1,9 @@
 <template>
-  <van-image v-bind="propsValue" v-on:click="onClick" class="img"/>
+  <div @click.stop="$emit('select', $event)">
+    <slot name="select-box"></slot>
+
+    <van-image v-bind="propsValue" v-on:click="onClick" class="img"/>
+  </div>
 </template>
 
 <script>

@@ -1,5 +1,8 @@
 <template>
-  <van-button v-bind="propsValue" v-on:click="onClick" v-on:touchstart="onTouchstart" />
+  <div @click.stop="$emit('select', $event)">
+    <van-button v-bind="propsValue" v-on:click="onClick" v-on:touchstart="onTouchstart" />
+    <slot name="select-box"></slot>
+  </div>
 </template>
 
 <script>

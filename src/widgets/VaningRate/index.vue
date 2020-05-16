@@ -1,5 +1,9 @@
 <template>
-  <van-rate v-bind="propsValue" />
+  <div @click.stop="$emit('select', $event)">
+    <slot name="select-box"></slot>
+
+    <van-rate v-bind="propsValue" />
+  </div>
 </template>
 
 <script>

@@ -18,7 +18,8 @@ export default {
     return {
       src: '//img.yzcdn.cn/vant/cat.jpeg',
       width: '100',
-      height: '100'
+      height: '100',
+      'font-size': 0 // 因为图片会被 node 包裹着, 设置字体为了是为了解决包裹图片的 div 的地图有空白像素的问题
     }
   },
   getPropsKey () {
@@ -27,14 +28,6 @@ export default {
       { key: 'width', type: 'string', label: '宽度' },
       { key: 'height', type: 'string', label: '高度' }
     ]
-  },
-  getStyleValue () {
-    return {
-      'font-size': 0, // 因为图片会被 node 包裹着, 设置字体为了是为了解决包裹图片的 div 的地图有空白像素的问题
-    }
-  },
-  getStyleKey () {
-    return []
   },
   getEventKey () {
     return [

@@ -24,12 +24,6 @@ export default {
       { key: 'text', type: 'string', label: '文字' }
     ]
   },
-  getStyleValue () {
-    return {}
-  },
-  getStyleKey () {
-    return []
-  },
   getEventKey () {
     return [
       { key: 'click', label: 'click' },

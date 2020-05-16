@@ -259,7 +259,6 @@ export default {
       filter(action => [
         'UPDATE_EVENT_VALUE',
         'UPDATE_PROP_VALUE.propModel',
-        'UPDATE_STYLE_VALUE.notify',
         'UPDATE_EMIT_EVENT_VALUE'
       ].indexOf(action.type) !== -1),
       debounceTime(150)

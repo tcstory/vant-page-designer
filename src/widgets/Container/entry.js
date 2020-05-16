@@ -1,6 +1,8 @@
 import Container from './index.vue'
 import { createCompInfo } from '../../utils'
 
+import { propsKey } from './common'
+
 const info = createCompInfo({
   version: '1.0.0',
   name: 'Container',
@@ -16,14 +18,6 @@ export default {
   component: Container,
   getDefaultPropsValue () {
     return {
-    }
-  },
-  getPropsKey () {
-    return [
-    ]
-  },
-  getStyleValue () {
-    return {
       width: '',
       height: '',
       margin: '',
@@ -38,14 +32,8 @@ export default {
       'flex-shrink': ''
     }
   },
-  getStyleKey () {
-    return [
-      { key: 'width', label: '宽度' },
-      { key: 'height', label: '高度' },
-      { key: 'margin', label: '外边距' },
-      { key: 'padding', label: '内边距' },
-      { key: 'display', label: 'display', options: ['block', 'inline-block', 'flex'] }
-    ]
+  getPropsKey () {
+    return propsKey
   },
   getEventKey () {
     return []
