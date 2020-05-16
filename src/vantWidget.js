@@ -38,15 +38,6 @@ function createInstance (key) {
     writable: true
   })
 
-  obj.styleValue = store[key].getStyleValue()
-  // obj.styleKey = Object.freeze(store[key].getStyleKey())
-  Object.defineProperty(obj, 'styleKey', {
-    value: store[key].getStyleKey(),
-    configurable: false,
-    enumerable: true,
-    writable: true
-  })
-
   obj.eventValue = store[key].getEventValue()
   // obj.eventKey = Object.freeze(store[key].getEventKey())
 
@@ -83,7 +74,7 @@ export default {
   createInstance,
   createInstanceFromJson,
   getComponents,
-  getComponentMap() {
+  getComponentMap () {
     return store
   }
 }

@@ -18,13 +18,11 @@
           v-model="curTab"
           dark
         >
-          <v-tab :key="tabName.style">样式</v-tab>
           <v-tab :key="tabName.prop">属性</v-tab>
           <v-tab :key="tabName.event">事件</v-tab>
         </v-tabs>
-        <div style="padding: 0 10px;">
+        <div style="padding: 10px 10px 0;">
           <v-tabs-items v-model="curTab">
-            <v-tab-item :key="tabName.style"><box-model :node="panel" /></v-tab-item>
             <v-tab-item :key="tabName.prop"><prop-model :node="panel" /></v-tab-item>
             <v-tab-item :key="tabName.event"><event-model :node="panel" :sender-list="senderList"/></v-tab-item>
           </v-tabs-items>
@@ -35,7 +33,6 @@
 </template>
 
 <script>
-import BoxModel from './BoxModel'
 import PropModel from './PropModel'
 import EventModel from './EventModel'
 
@@ -51,7 +48,6 @@ const tabName = {
 export default {
   name: 'EditPanel',
   components: {
-    BoxModel,
     PropModel,
     EventModel,
     simplebar

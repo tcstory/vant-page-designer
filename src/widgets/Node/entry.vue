@@ -4,12 +4,12 @@
           'no-children': !hasChildren,
           'is-root': !node.parent
         }" @click.stop="handleSelect">
-    <component v-if="node" v-bind:is="node.id" :objectId="node.objectId" v-bind:style="getStyleValue">
+    <component v-if="node" v-bind:is="node.id" :objectId="node.objectId" v-bind:propsValue="getPropsValue">
       <node v-for="item in node.children" :key="item.objectId" :node="item"/>
     </component>
   </div>
-  <div v-else class="node base-node" :class="{'is-root': !node.parent, 'is-selected': isSelected,}" @click.stop="handleSelect"
-       v-bind:style="getStyleValue">
+  <div v-else class="node base-node" :class="{'is-root': !node.parent, 'is-selected': isSelected,}"
+       @click.stop="handleSelect">
     <component v-bind:is="node.id"
                v-bind:eventValue="getEventValue"
                v-bind:propsValue="getPropsValue" :objectId="node.objectId"/>
@@ -44,9 +44,6 @@ export default {
     },
     getPropsValue () {
       return this.node.propsValue
-    },
-    getStyleValue () {
-      return this.node.styleValue
     },
     isContainer () {
       return this.node.name === Container.info.name

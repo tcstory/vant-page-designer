@@ -105,12 +105,7 @@ export default {
           value = Number(value)
         }
         node.propsValue[key] = value
-      } else if (msg.type === 'IDE/UPDATE_STYLE_VALUE') {
-        const { objectId, key, value } = msg.payload
-        const node = this.nodeMap[objectId]
-
-        node.styleValue[key] = value
-      } else if (msg.type === 'IDE/RELOAD') {
+      }else if (msg.type === 'IDE/RELOAD') {
         this.node = msg.payload.node
         this.selectedNode = msg.payload.node
         this.selectedContainer = msg.payload.node

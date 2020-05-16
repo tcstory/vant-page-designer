@@ -26,12 +26,6 @@ export default {
       { key: 'count', type: 'string', label: '图标总数' }
     ]
   },
-  getStyleValue () {
-    return {}
-  },
-  getStyleKey () {
-    return []
-  },
   getEventKey () {
     return []
   },
