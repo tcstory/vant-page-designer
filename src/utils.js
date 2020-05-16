@@ -3,7 +3,7 @@ import { camelCase, uniqueId } from 'loadsh'
 export function createCompInfo (info) {
   return {
     ...info,
-    id: `${info.name}-${info.version}`,
+    id: `${info.name}`,
     parent: null
   }
 }

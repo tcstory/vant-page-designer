@@ -82,5 +82,8 @@ export default {
   install,
   createInstance,
   createInstanceFromJson,
-  getComponents
+  getComponents,
+  getComponentMap() {
+    return store
+  }
 }

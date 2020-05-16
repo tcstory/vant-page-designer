@@ -1,24 +1,23 @@
 <template>
-    <div class="node" :class="{
-      'base-node': !isContainer,
-      'container-node': isContainer,
-      'is-selected': isSelected,
-      'no-children': !hasChildren,
-      'is-root': !node.parent
-    }" @click.stop="handleSelect">
-      <template v-if="isContainer">
-        <component v-if="node" v-bind:is="node.id" :objectId="node.objectId" :styleValue="getStyleValue">
-          <node v-for="item in node.children" :key="item.objectId" :node="item"/>
-        </component>
-      </template>
-      <component v-else v-bind:is="node.id"
-                 v-bind:eventValue="getEventValue"
-                 v-bind:propsValue="getPropsValue" :objectId="node.objectId"/>
-      <div v-if="!isContainer" class="circle num1"></div>
-      <div v-if="!isContainer" class="circle num2"></div>
-      <div v-if="!isContainer" class="circle num3"></div>
-      <div v-if="!isContainer" class="circle num4"></div>
-    </div>
+  <div v-if="isContainer" class="node container-node" :class="{
+          'is-selected': isSelected,
+          'no-children': !hasChildren,
+          'is-root': !node.parent
+        }" @click.stop="handleSelect">
+    <component v-if="node" v-bind:is="node.id" :objectId="node.objectId" v-bind:style="getStyleValue">
+      <node v-for="item in node.children" :key="item.objectId" :node="item"/>
+    </component>
+  </div>
+  <div v-else class="node base-node" :class="{'is-root': !node.parent, 'is-selected': isSelected,}" @click.stop="handleSelect"
+       v-bind:style="getStyleValue">
+    <component v-bind:is="node.id"
+               v-bind:eventValue="getEventValue"
+               v-bind:propsValue="getPropsValue" :objectId="node.objectId"/>
+    <div class="circle num1"></div>
+    <div class="circle num2"></div>
+    <div class="circle num3"></div>
+    <div class="circle num4"></div>
+  </div>
 </template>
 
 <script>
@@ -132,11 +131,8 @@ export default {
   .container-node {
     /*flex: 1;*/
     display: block;
-    background: radial-gradient(#B2DFDB 15%, transparent 16%) 0 0;
-    background-size:16px 16px;
 
     &.is-root {
-      background: none;
       width: 100%;
       height: 100%;
     }
@@ -148,6 +144,8 @@ export default {
 
     &.is-selected {
       outline: 1px dashed #009688;
+      background: radial-gradient(#B2DFDB 15%, transparent 16%) 0 0;
+      background-size: 16px 16px;
     }
   }
 </style>

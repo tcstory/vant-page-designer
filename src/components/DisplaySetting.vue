@@ -55,6 +55,29 @@
         item-text="key"
         item-value="value"
       ></v-select>
+      <v-select
+        @input="onInput($event, 'align-content')"
+        outlined
+        :items="alignContentOptions"
+        label="align content"
+        dense
+        item-text="key"
+        item-value="value"
+      ></v-select>
+      <v-text-field
+        outlined
+        dense
+        autocomplete="off"
+        label="flex grow"
+        @input="onInput($event, 'flex-grow')"
+      ></v-text-field>
+      <v-text-field
+        outlined
+        dense
+        autocomplete="off"
+        label="flex shrink"
+        @input="onInput($event, 'flex-shrink')"
+      ></v-text-field>
     </div>
   </div>
 </template>

@@ -33,7 +33,9 @@ export default {
       'flex-wrap': '',
       'justify-content': '',
       'align-items': '',
-      'align-content': ''
+      'align-content': '',
+      'flex-grow': '',
+      'flex-shrink': ''
     }
   },
   getStyleKey () {
