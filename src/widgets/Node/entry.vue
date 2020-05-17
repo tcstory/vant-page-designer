@@ -140,10 +140,10 @@ export default {
       height: 100%;
     }
 
-    &.no-children {
-      min-height: 64px;
-      min-width: 64px;
-    }
+    /*&.no-children {*/
+    /*  min-height: 64px;*/
+    /*  min-width: 64px;*/
+    /*}*/
 
     &.is-selected {
       outline: 1px dashed #009688;

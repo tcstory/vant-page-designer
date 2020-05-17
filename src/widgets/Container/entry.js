@@ -19,7 +19,7 @@ export default {
   getDefaultPropsValue () {
     return {
       width: '',
-      height: '',
+      height: '64px',
       margin: '',
       padding: '',
       display: '',

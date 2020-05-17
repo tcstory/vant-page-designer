@@ -173,6 +173,7 @@ export default {
         this.setNodeMap(action.payload.objectId, action.payload)
 
         if (this.node === null) {
+          action.payload.propsValue.height = '100%'
           q.sendMsg('IDE/ADD', action.payload)
           this.node = action.payload
           this.node.parent = null

@@ -30,8 +30,7 @@ export default {
   },
   computed: {
     styleValue () {
-      console.log('这是啥???')
-      return pick(this.propsValue, getStyleKey())
+      return pick(this.propsValue, getStyleKey().map(item => item.key))
     }
   }
 }
