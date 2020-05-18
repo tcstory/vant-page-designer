@@ -1,8 +1,10 @@
 <template>
   <div class="select">
-    <div class="mask" @click="show=true"><input type="text" :value="myValue"></div>
+    <div class="mask" @click="onClick">
+      <input type="text" :value="myValue" ref="input"  @blur="onBlur">
+    </div>
     <div class="options" v-if="show">
-      <div class="option" v-for="op in options" :key="op" @click="onOptionClick(op)">{{op}}</div>
+      <div class="option" v-for="op in options" :key="op.key" @click="onOptionClick(op)">{{op.value}}</div>
     </div>
   </div>
 </template>
@@ -34,13 +36,22 @@ export default {
   },
   methods: {
     onOptionClick (op) {
-      this.myValue = op
+      this.myValue = op.value
       this.show = false
       this.$emit('input', {
         target: {
           value: this.myValue
         }
       })
+    },
+    onClick () {
+      this.show = true
+      this.$refs.input.focus()
+    },
+    onBlur () {
+      setTimeout(() => {
+        this.show = false
+      }, 300)
     }
   }
 }
@@ -67,10 +78,11 @@ export default {
 
   .options {
     position: absolute;
-    background-color: rgba(255, 255, 255, 0.08);
+    background-color: #303030;
     left: 0;
     right: 0;
     border-top: 1px solid #2196f3;
+    z-index: 10;
   }
 
   .option {

@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="$emit('select', $event)">
+  <div class="wrap" @click.stop="$emit('select', $event)">
     <slot name="select-box"></slot>
 
     <van-image v-bind="propsValue" v-on:click="onClick" class="img"/>
@@ -43,6 +43,11 @@ export default {
 </script>
 
 <style scoped>
+  .wrap {
+    display: inline-block;
+    vertical-align: top;
+  }
+
   .img {
     vertical-align: top;
   }

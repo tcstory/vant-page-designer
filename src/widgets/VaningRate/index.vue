@@ -1,5 +1,5 @@
 <template>
-  <div @click.stop="$emit('select', $event)">
+  <div class="wrap" @click.stop="$emit('select', $event)">
     <slot name="select-box"></slot>
 
     <van-rate v-bind="propsValue" />
@@ -34,5 +34,7 @@ export default {
 </script>
 
 <style scoped>
-
+  .wrap {
+    display: inline-block;
+  }
 </style>

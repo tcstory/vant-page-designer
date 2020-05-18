@@ -87,7 +87,7 @@ export default {
 <style scoped lang="scss">
 
   .base-node {
-    display: inline-block;
+    /*display: inline-block;*/
     position: relative;
 
     &.is-selected {
@@ -133,17 +133,16 @@ export default {
 
   .container-node {
     /*flex: 1;*/
-    display: block;
+    /*display: block;*/
 
     &.is-root {
       width: 100%;
       height: 100%;
     }
 
-    /*&.no-children {*/
-    /*  min-height: 64px;*/
-    /*  min-width: 64px;*/
-    /*}*/
+    &.no-children {
+      height: 64px;
+    }
 
     &.is-selected {
       outline: 1px dashed #009688;

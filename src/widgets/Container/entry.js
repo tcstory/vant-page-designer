@@ -19,10 +19,10 @@ export default {
   getDefaultPropsValue () {
     return {
       width: '',
-      height: '64px',
+      height: '',
       margin: '',
       padding: '',
-      display: '',
+      display: 'block',
       'flex-direction': '',
       'flex-wrap': '',
       'justify-content': '',
