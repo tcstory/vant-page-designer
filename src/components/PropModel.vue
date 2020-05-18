@@ -98,29 +98,31 @@ export default {
   justify-content: space-between;
   background-color: #2a2d35;
 }
+</style>
 
-.form-row {
-  margin-bottom: 4px;
-  height: 24px;
-  display: flex;
-  justify-content: space-between;
-}
+<style>
+  .form-row {
+    margin-bottom: 4px;
+    min-height: 24px;
+    display: flex;
+    justify-content: space-between;
+  }
 
-.form-label {
-  color: rgba(255, 255, 255, 0.7);
-  width: 60px;
-  display: inline-block;
-}
+  .form-label {
+    color: rgba(255, 255, 255, 0.7);
+    width: 60px;
+    display: inline-block;
+  }
 
-.form-input,
-.form-select {
-  width: 180px;
-  padding: 0 6px;
-  background-color: rgba(255, 255, 255, 0.08);
-  display: inline-block;
-}
+  .form-input,
+  .form-select {
+    width: 180px;
+    padding: 0 6px;
+    background-color: rgba(255, 255, 255, 0.08);
+    display: inline-block;
+  }
 
-.form-select {
-  padding: 0;
-}
+  .form-select {
+    padding: 0;
+  }
 </style>

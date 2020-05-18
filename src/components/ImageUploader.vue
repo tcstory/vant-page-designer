@@ -1,16 +1,24 @@
 <template>
   <div class="image-loader">
-    <div class="input-group">
-      <span class="input-group-addon addon-sm">{{keyVal.label}}</span>
-      <input class="form-input input-sm" type="text" :id="objectId" :value="src"
-             v-on:input="onInput">
-      <label class="upload-btn btn btn-action btn-sm" :for="'upload' + objectId">
-        <i class="icon icon-upload"></i>
-      </label>
-    </div>
-    <div class="progress-bar">
-      <span class="text">上传进度</span>
-      <progress class="progress" :value="progress" max="100"></progress>
+    <div class="form-row">
+      <span class="form-label">{{keyVal.label}}</span>
+      <div class="form-input-wrap">
+        <input class="form-input" type="text" :id="objectId" :value="src"
+               @focus="onFocus"
+               @blur="onBlur"
+               v-on:input="onInput">
+        <div class="progress-bar">
+          <v-progress-linear
+            rounded
+            v-model="progress"
+            color="primary"
+          ></v-progress-linear>
+        </div>
+      </div>
+      <v-btn color="primary upload-btn" :class="{'is-focused': isFocused}" fab dark x-small @click="onClick">
+        <v-icon>cloud_upload</v-icon>
+      </v-btn>
+
     </div>
     <input type="file"
            :id="'upload' + objectId"
@@ -43,10 +51,22 @@ export default {
   },
   data () {
     return {
-      progress: 0
+      progress: 0,
+      isFocused: false
     }
   },
   methods: {
+    onFocus () {
+      console.log('onFocus??')
+      this.isFocused = true
+    },
+    onBlur () {
+      console.log('onBlur??')
+      this.isFocused = false
+    },
+    onClick () {
+      this.$refs.uploader.click()
+    },
     onInput (ev) {
       this.$emit('image-src-change', ev)
     },
@@ -59,7 +79,6 @@ export default {
 
         observable.subscribe({
           next: (val) => {
-            console.log('进度', val)
             this.progress = val
           }
         })
@@ -88,21 +107,44 @@ export default {
 <style scoped lang="scss">
   .image-loader {
     position: relative;
+    width: 100%;
   }
 
-  .row {
-    display: flex;
+  .form-row {
+    margin-bottom: 8px;
+  }
+
+  .form-input {
+    width: 100%;
+    height: 100%;
+  }
+
+  .form-input-wrap {
+    flex-grow: 1;
+    position: relative;
+    height: 32px;
   }
 
   .upload-btn {
-    flex-shrink: 0;
-    margin-left: 16px;
+    /*flex-shrink: 0;*/
+    /*margin-left: 16px;*/
+    position: absolute;
+    right: 0;
+    transition: opacity 250ms ease-out;
+
+    &.is-focused {
+      opacity: 0.3;
+      pointer-events: none;
+    }
   }
 
   .progress-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    margin-top: 2px;
+    left: 0;
+    right: 0;
   }
 
   .text {
