@@ -125,4 +125,9 @@ export default {
   .form-select {
     padding: 0;
   }
+
+  .form-checkbox {
+    height: 24px;
+    margin-top: 0;
+  }
 </style>

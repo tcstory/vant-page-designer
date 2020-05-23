@@ -1,10 +1,11 @@
 <template>
   <div class="select">
-    <div class="mask" @click="onClick">
-      <input type="text" :value="myValue" ref="input"  @blur="onBlur">
-    </div>
+<!--    <div class="mask" @click="onClick">-->
+<!--    </div>-->
+    <input type="text" :value="myValue" ref="input"  @blur="onBlur" @input="onInput" @focus="onFocus">
+
     <div class="options" v-if="show">
-      <div class="option" v-for="op in options" :key="op.key" @click="onOptionClick(op)">{{op.value}}</div>
+      <div class="option" v-for="op in options" :key="op.key" @click="onOptionClick(op)">{{op.key}}</div>
     </div>
   </div>
 </template>
@@ -34,6 +35,11 @@ export default {
       show: false
     }
   },
+  watch: {
+    value (val) {
+      this.myValue = val
+    }
+  },
   methods: {
     onOptionClick (op) {
       this.myValue = op.value
@@ -48,10 +54,17 @@ export default {
       this.show = true
       this.$refs.input.focus()
     },
+    onInput (ev) {
+      this.myValue = ev.target.value
+      this.$emit('input', ev)
+    },
+    onFocus () {
+      this.show = true
+    },
     onBlur () {
       setTimeout(() => {
         this.show = false
-      }, 300)
+      }, 150)
     }
   }
 }
@@ -62,6 +75,7 @@ export default {
     width: 100%;
     height: 100%;
     position: relative;
+    background-color: rgba(255, 255, 255, 0.08);
   }
 
   .mask {
@@ -73,7 +87,7 @@ export default {
     width: 100%;
     height: 100%;
     padding: 0 6px;
-    pointer-events: none;
+    /*pointer-events: none;*/
   }
 
   .options {

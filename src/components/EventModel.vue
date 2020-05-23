@@ -1,63 +1,87 @@
 <template>
   <div class="event-model mb-2">
-    <p @click="handleClick" class="c-hand title-bar">
-      事件模型
-      <i class="icon icon-arrow-up" v-if="show"></i>
-      <i class="icon icon-arrow-down" v-if="!show"></i>
-    </p>
-    <div class="margin-border" v-if="show">
-      <div class="title">选择触发的事件: </div>
-      <div class="form-group" v-for="keyVal of node.eventKey" :key="keyVal.key">
-        <label class="form-checkbox">
-          <input type="checkbox" :checked="node.eventValue[keyVal.key]" @change="onChange($event, keyVal)">
-          <i class="form-icon"></i>
-          {{keyVal.label}}
-        </label>
-      </div>
-      <div class="title">
-        添加响应的属性值:
-      </div>
-      <div class="input-group">
-        <span class="input-group-addon addon-sm">触发者</span>
-        <select class="form-select select-sm" v-model="curSender">
-          <option v-for="sender of senderList" :value="sender" :key="sender.objectId">{{sender.objectId}}</option>
-        </select>
-        <span class="input-group-addon addon-sm">事件</span>
-        <select class="form-select select-sm" v-model="curEventType">
-          <option v-for="eventType of curSender.eventTypeList" :value="eventType" :key="eventType">{{eventType}}</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <span class="input-group-addon addon-sm">属性</span>
-        <select class="form-select select-sm" v-model="curProp">
-          <option v-for="keyVal of propsKey" :value="keyVal.key" :key="keyVal.key">{{keyVal.label}}</option>
-        </select>
-        <span class="input-group-addon addon-sm">新值</span>
-        <input class="form-input input-sm" type="text" placeholder="新值" v-model="curValue">
-        <div class="upload-btn btn btn-action btn-sm" @click="handleAddPropItem">
-          <i class="icon icon-plus"></i>
+    <div class="margin-border">
+
+      <v-card class="float-panel-bottom">
+        <v-card-subtitle>触发的事件</v-card-subtitle>
+        <v-card-text class="text--primary">
+          <v-checkbox v-for="keyVal of node.eventKey" :key="keyVal.key" class="form-checkbox"
+                      :value="node.eventValue[keyVal.key]" @change="onChange($event, keyVal)"
+                      :label="keyVal.key"
+          ></v-checkbox>
+        </v-card-text>
+      </v-card>
+      <v-card class="float-panel-bottom">
+        <v-card-subtitle>响应的事件</v-card-subtitle>
+        <div class="form-row">
+          <span class="form-label">触发者</span>
+          <my-select
+            class="form-select"
+            :value="curSender.objectId"
+            @input="onInput($event, 'curSender')"
+            :options="senderList.map(item=>{
+              return {key: item.objectId, value: item.objectId}
+            })"
+          ></my-select>
         </div>
-      </div>
+        <div class="form-row">
+          <span class="form-label">事件</span>
+          <my-select
+            class="form-select"
+            :value="curEventType"
+            @input="onInput($event, 'curEventType')"
+            :options="curSender.eventTypeList.map(item=>{
+              return {key: item, value: item}
+            })"
+          ></my-select>
+        </div>
+        <div class="form-row">
+          <span class="form-label">属性</span>
+          <my-select
+            class="form-select"
+            :value="curProp"
+            @input="onInput($event, 'curProp')"
+            :options="propsKey.map(keyVal=>{
+              return {key: keyVal.label, value: keyVal.key}
+            })"
+          ></my-select>
+        </div>
+        <div class="form-row">
+          <span class="form-label">新值</span>
+          <input
+            class="form-input"
+            type="text"
+            v-model="curValue"
+          />
+        </div>
+        <div class="form-row btn-row">
+          <v-btn small color="primary" dark @click="handleAddPropItem">添加</v-btn>
+        </div>
+      </v-card>
       <div class="label" v-for="item in propList" :key="item.id">
-        触发者: {{item.sender}},
-        事件: {{item.eventType}},
-        属性: {{item.key}},
-        新值: {{item.toValue}}
+        <span class="text-label">触发者:</span><span class="text-code">{{item.sender}}</span>,
+        <span class="text-label">事件:</span><span class="text-code">{{item.eventType}}</span>,
+        <span class="text-label">属性:</span><span class="text-code">{{item.key}}</span>,
+        <span class="text-label">新值:</span><span class="text-code">{{item.toValue}}</span>
       </div>
-<!--      <div class="btn btn-sm" v-if="propList.length" @click="applyProps">提交修改</div>-->
-<!--      <input class="form-input input-sm" type="text" placeholder="新值" style="width: 160px;">-->
-<!--      <label class="btn btn-action btn-sm btn-error" @click="handleDelPropItem(idx)">-->
-<!--        <i class="icon icon-delete"></i>-->
-<!--      </label>-->
+      <!--      <div class="btn btn-sm" v-if="propList.length" @click="applyProps">提交修改</div>-->
+      <!--      <input class="form-input input-sm" type="text" placeholder="新值" style="width: 160px;">-->
+      <!--      <label class="btn btn-action btn-sm btn-error" @click="handleDelPropItem(idx)">-->
+      <!--        <i class="icon icon-delete"></i>-->
+      <!--      </label>-->
     </div>
   </div>
 </template>
 
 <script>
-import { uniqBy } from 'loadsh'
+import { uniqBy, set } from 'loadsh'
+import Select from './Select'
 
 export default {
   name: 'EventModel',
+  components: {
+    'my-select': Select
+  },
   props: {
     node: {
       type: Object,
@@ -70,7 +94,6 @@ export default {
   },
   data () {
     return {
-      show: true,
       propList: [],
       styleList: [],
       curSender: {
@@ -88,14 +111,21 @@ export default {
     }
   },
   methods: {
-    handleClick () {
-      this.show = !this.show
+    onInput (ev, key) {
+      if (key === 'curSender') {
+        for (const sender of this.senderList) {
+          const value = ev.target.value
+          if (sender.objectId === value) {
+            this.curSender = sender
+          }
+        }
+      } else if (key === 'curEventType') {
+        this.curEventType = ev.target.value
+      } else if (key === 'curProp') {
+        this.curProp = ev.target.value
+      }
     },
-    onChange (ev, keyVal) {
-      const value = ev.target.checked
-
-      this.node.eventValue[keyVal.key] = value
-
+    onChange (value, keyVal) {
       this.node$.next({
         type: 'SET_EVENT_MAP_SENDER.eventModel',
         payload: {
@@ -169,7 +199,28 @@ export default {
     font-size: 13px;
   }
 
-  .event-label {
-    font-size: 13px;
+  .v-card__subtitle, .v-card__text {
+    padding-left: 0;
+  }
+
+  .btn-row {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .form-select {
+    width: 180px;
+    height: 24px;
+    display: inline-block;
+  }
+
+  .text-label {
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-block;
+    padding: 0 4px;
+  }
+
+  .text-code {
+    color: #4CAF50;
   }
 </style>
