@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { pick } from 'loadsh'
+import { pick } from 'lodash'
 import { propsKey } from './common'
 
 function getStyleKey () {

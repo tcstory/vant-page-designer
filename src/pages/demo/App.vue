@@ -8,7 +8,7 @@
 </template>
 
 <script>
-import { get } from 'loadsh'
+import { get, isNil } from 'lodash'
 import { Subject } from 'rxjs'
 import Vue from 'vue'
 
@@ -38,22 +38,12 @@ export default {
     return {
       node: null,
       selectedNode: null,
-      selectedContainer: null,
       eventMap: {}
     }
   },
   methods: {
     initNodeMap () {
       this.nodeMap = {}
-    },
-    setRootNode (node) {
-      this.nodeMap[node.objectId] = node
-      this.node = node
-      this.node.parent = null
-      this.node.styleValue = {
-        width: '100%',
-        height: '100%'
-      }
     },
     setEventMap (eventMap) {
       this.eventMap = eventMap
@@ -64,53 +54,33 @@ export default {
     q.setReceiver(window.parent)
 
     q.subscribe(msg => {
-      if (msg.type === 'IDE/ADD') {
-        this.nodeMap[msg.payload.objectId] = msg.payload
+      if (msg.type === 'msg/bootstrap_reload/order') {
+        this.node = msg.payload.node
+        this.nodeMap = msg.payload.nodeMap
+        this.selectedNode = msg.payload.node
+      } else if (msg.type === 'msg/add_node/order') {
+        const node = msg.payload
+
+        this.nodeMap[node.objectId] = node
 
         if (this.node === null) {
-          this.setRootNode(msg.payload)
+          this.node = node
 
-          q.sendMsg('DEMO/SET_SELECTED', this.node.objectId)
-          q.sendMsg('DEMO/SET_CONTAINER', this.node.objectId)
+          q.sendMsg('msg/set_selected_node/request', this.node.objectId)
         } else {
-          if (this.selectedContainer.children) {
-            this.selectedContainer.children.push(msg.payload)
-            msg.payload.parent = this.selectedContainer
+          if (!isNil(this.selectedNode.children)) {
+            this.selectedNode.children.push(node)
+            node.parent = this.selectedNode
           }
         }
-      } else if (msg.type === 'IDE/SET_SELECTED') {
+      } else if (msg.type === 'msg/set_selected_node/confirm' || msg.type === 'msg/set_selected_node/order') {
         this.selectedNode = this.nodeMap[msg.payload]
 
         this.node$.next({
-          type: 'SET_SELECTED.demo',
+          type: 'action/set_selected_node/broadcast',
           payload: this.selectedNode
         })
-      } else if (msg.type === 'IDE/SET_CONTAINER') {
-        this.selectedContainer = this.nodeMap[msg.payload]
-      } else if (msg.type === 'IDE/UPDATE_EMIT_EVENT_VALUE') {
-        const { objectId, key, value } = msg.payload
-        const node = this.nodeMap[objectId]
-
-        node.eventValue[key] = value
-      } else if (msg.type === 'IDE/UPDATE_EVENT_VALUE') {
-        const { objectId, key, value } = msg.payload
-        const node = this.nodeMap[objectId]
-
-        node.eventValue[key] = value
-      } else if (msg.type === 'IDE/UPDATE_PROP_VALUE') {
-        let { objectId, key, value, type } = msg.payload
-        const node = this.nodeMap[objectId]
-
-        if (type === 'number') {
-          value = Number(value)
-        }
-        node.propsValue[key] = value
-      }else if (msg.type === 'IDE/RELOAD') {
-        this.node = msg.payload.node
-        this.selectedNode = msg.payload.node
-        this.selectedContainer = msg.payload.node
-        this.nodeMap = msg.payload.nodeMap
-      } else if (msg.type === 'IDE/DELETE_NODE') {
+      } else if (msg.type === 'msg/delete_node/order') {
         const targetNode = this.nodeMap[msg.payload]
         if (targetNode.children) {
           targetNode.children = []
@@ -122,6 +92,28 @@ export default {
             parent.children.splice(i, 1)
           }
         }
+      }
+
+      if (msg.type === 'IDE/UPDATE_EMIT_EVENT_VALUE') {
+        const { objectId, key, value } = msg.payload
+        const node = this.nodeMap[objectId]
+
+        node.eventValue[key] = value
+      } else if (msg.type === 'msg/update_event_value/order') {
+        const { objectId, key, value } = msg.payload
+        const node = this.nodeMap[objectId]
+
+        node.eventValue[key] = value
+      } else if (msg.type === 'msg/update_prop_value/order') {
+        let { objectId, key, value, type } = msg.payload
+        const node = this.nodeMap[objectId]
+
+        if (type === 'number') {
+          value = Number(value)
+        }
+        node.propsValue[key] = value
+      } else if (msg.type === 'IDE/DELETE_NODE') {
+
       } else if (msg.type === 'IDE/UPDATE_EVENT_MAP') {
         this.setEventMap(msg.payload)
       }
@@ -129,10 +121,8 @@ export default {
 
     this.eventBus$.subscribe((action) => {
       const { sender, eventType } = action.payload
-      console.log('发生了啥', action, this.eventMap)
       const receiverObj = get(this.eventMap, `${sender}.${eventType}`, {})
 
-      // todo 支持对于 style属性的修改
       for (const receiver of Object.keys(receiverObj)) {
         const { key, value } = receiverObj[receiver]
         this.nodeMap[receiver].propsValue[key] = value
@@ -140,7 +130,7 @@ export default {
     })
   },
   mounted () {
-    this.q.sendMsg('DEMO/LOADED', '')
+    this.q.sendMsg('msg/bootstrap/request', '')
   }
 }
 </script>

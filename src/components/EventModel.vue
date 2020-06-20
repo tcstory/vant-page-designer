@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import { uniqBy, set } from 'loadsh'
+import { uniqBy, set } from 'lodash'
 import Select from './Select'
 
 export default {
@@ -127,7 +127,7 @@ export default {
     },
     onChange (value, keyVal) {
       this.node$.next({
-        type: 'SET_EVENT_MAP_SENDER.eventModel',
+        type: 'action/set_event_map_sender/request',
         payload: {
           sender: this.node.objectId,
           eventType: keyVal.key,
@@ -136,7 +136,7 @@ export default {
       })
 
       this.node$.next({
-        type: 'UPDATE_EVENT_VALUE',
+        type: 'action/update_event_value/request',
         payload: {
           objectId: this.node.objectId,
           key: keyVal.key,
@@ -154,7 +154,7 @@ export default {
       })
 
       this.node$.next({
-        type: 'SET_EVENT_MAP_RECEIVER.eventModel',
+        type: 'action/set_event_map_receiver/request',
         payload: {
           receiver: this.node.objectId,
           sender: this.curSender.objectId,

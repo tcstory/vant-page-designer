@@ -15,10 +15,6 @@ const node$ = new Subject()
 
 Vue.prototype.node$ = node$
 
-const system$ = new Subject()
-
-Vue.prototype.system$ = system$
-
 // todo 考虑是不是需要使用 ReplaySubject
 Vue.prototype.eventBus$ = new Subject()
 

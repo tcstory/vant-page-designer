@@ -64,16 +64,12 @@ export default {
   },
   methods: {
     handleSelect () {
-      this.q.sendMsg('DEMO/SET_SELECTED', this.node.objectId)
-
-      if (this.isContainer) {
-        this.q.sendMsg('DEMO/SET_CONTAINER', this.node.objectId)
-      }
+      this.q.sendMsg('msg/set_selected_node/request', this.node.objectId)
     }
   },
   created () {
     this.subscribtion = this.node$.pipe(
-      filter(action => action.type === 'SET_SELECTED.demo')
+      filter(action => action.type === 'action/set_selected_node/broadcast')
     ).subscribe((action) => {
       this.isSelected = action.payload === this.node
     })

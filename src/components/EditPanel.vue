@@ -83,7 +83,7 @@ export default {
   methods: {
     handleDelete () {
       this.node$.next({
-        type: 'DELETE_NODE.editPanel',
+        type: 'action/delete_node/request',
         payload: this.panel.objectId
       })
     }
@@ -108,7 +108,7 @@ export default {
 
     &.active {
       opacity: 1;
-      z-index: 10;
+      z-index: 1;
     }
   }
 

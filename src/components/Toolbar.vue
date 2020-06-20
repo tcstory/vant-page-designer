@@ -79,7 +79,7 @@ export default {
     },
     handleAddVantWidget (comp) {
       this.node$.next({
-        type: 'ADD',
+        type: 'action/add_node/request',
         payload: vantWidget.createInstance(comp.id)
       })
     },

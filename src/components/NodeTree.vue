@@ -21,20 +21,13 @@ export default {
   methods: {
     onClick (item) {
       this.node$.next({
-        type: 'EDIT_NODE.nodeTree',
+        type: 'action/edit_node/request',
         payload: item
       })
-
-      if (item.children) {
-        this.node$.next({
-          type: 'SET_CONTAINER.nodeTree',
-          payload: item.objectId
-        })
-      }
     },
     handleDelete (item) {
       this.node$.next({
-        type: 'DELETE_NODE.nodeTree',
+        type: 'action/delete_node/request',
         payload: item.objectId
       })
     },
@@ -80,7 +73,7 @@ export default {
 
     this.subscriptions.push(
       this.node$.pipe(
-        filter(action => action.type === 'SET_ROOT.ide')
+        filter(action => action.type === 'action/set_root_node/broadcast')
       ).subscribe((action) => {
         this.myNode = action.payload
       })
@@ -88,7 +81,7 @@ export default {
 
     this.subscriptions.push(
       this.node$.pipe(
-        filter(action => action.type === 'EDIT_NODE.ide')
+        filter(action => action.type === 'action/edit_node/broadcast')
       ).subscribe((action) => {
         this.selectedNodeId = action.payload.objectId
       })

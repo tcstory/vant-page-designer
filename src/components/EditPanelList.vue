@@ -12,7 +12,7 @@
 <script>
 import EditPanel from './EditPanel'
 import { filter } from 'rxjs/operators'
-import { keyBy } from 'loadsh'
+import { keyBy } from 'lodash'
 
 const tabName = {
   style: '1',
@@ -47,7 +47,7 @@ export default {
   },
   created () {
     this.node$.pipe(
-      filter(action => action.type === 'EDIT_NODE.ide')
+      filter(action => action.type === 'action/edit_node/broadcast')
     ).subscribe((action) => {
       const { objectId } = action.payload
 
@@ -59,16 +59,8 @@ export default {
       this.setActivePanel(objectId)
     })
 
-    this.system$.pipe(
-      filter(action => action.type === 'RELOAD')
-    ).subscribe((action) => {
-      this.panelList = []
-      this.panelMap = {}
-      this.activePanel = -1
-    })
-
     this.node$.subscribe((action) => {
-      if (action.type === 'DELETE_NODE_CONFIRM.ide') {
+      if (action.type === 'action/delete_node/broadcast') {
         const deletedMap = keyBy(action.payload, 'objectId')
         const arr = []
 
@@ -88,7 +80,7 @@ export default {
       } else if (action.type === 'UPDATE_EVENT_MAP') {
         console.log('谁出发的吗')
         // this.eventMap = action.payload
-      } else if (action.type === 'UPDATE_EVENT_MAP_SENDER') {
+      } else if (action.type === 'action/update_event_map_sender/broadcast') {
         const arr = []
         const payload = action.payload
 

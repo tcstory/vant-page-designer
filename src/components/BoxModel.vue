@@ -73,7 +73,7 @@ export default {
     onStyleInput (value, keyVal) {
       // todo 判断设置的值是合法的, 再把事件广播出去
       this.node$.next({
-        type: 'UPDATE_STYLE_VALUE.notify',
+        type: 'action/update_style_value/request',
         payload: {
           objectId: this.node.objectId,
           key: keyVal.key,
