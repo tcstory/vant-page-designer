@@ -1,43 +1,31 @@
 <template>
-  <simplebar data-simplebar-auto-hide="false" class="edit-panel" ref="nodeTree" :class="{active: isActive}">
-    <div>
-      <v-card outlined>
-        <div class="id-row panel-row"><span class="primary--text">组件名字: &nbsp;</span>{{panel.name}}</div>
-        <div class="id-row panel-row"><span class="primary--text">唯一标识: &nbsp;</span>{{panel.objectId}}</div>
-        <div class="action-row panel-row">
-          <span class="primary--text">操作: &nbsp;</span>
-          <v-btn icon small @click="handleDelete" v-if="panel.parent" class="del-btn">
-            <v-icon medium>delete</v-icon>
-          </v-btn>
+  <div class="edit-panel" :class="{active: isActive}">
+    <Card :dis-hover="true">
+      <div class="panel-row"><span>组件名字: &nbsp;</span>{{panel.name}}</div>
+      <div class="panel-row"><span>唯一标识: &nbsp;</span>{{panel.objectId}}</div>
+      <div class="panel-row">
+        <span class="">操作: &nbsp;</span>
+        <div @click="handleDelete" v-if="panel.parent" class="del-btn">
+          <Icon type="md-trash" />
         </div>
-      </v-card>
+      </div>
+    </Card>
 
-      <v-card class="edit-panel-area" outlined>
-        <v-tabs
-          :centered="true"
-          v-model="curTab"
-          dark
-        >
-          <v-tab :key="tabName.prop">属性</v-tab>
-          <v-tab :key="tabName.event">事件</v-tab>
-        </v-tabs>
-        <div style="padding: 10px 10px 0;">
-          <v-tabs-items v-model="curTab">
-            <v-tab-item :key="tabName.prop"><prop-model :node="panel" /></v-tab-item>
-            <v-tab-item :key="tabName.event"><event-model :node="panel" :sender-list="senderList"/></v-tab-item>
-          </v-tabs-items>
-        </div>
-      </v-card>
-    </div>
-  </simplebar>
+    <Tabs>
+      <TabPane label="基础组件" :name="tabName.prop" :key="tabName.prop">
+        <prop-model :node="panel" />
+      </TabPane>
+      <TabPane label="事件" :name="tabName.event" :key="tabName.event">
+        <event-model :node="panel" />
+      </TabPane>
+    </Tabs>
+  </div>
 </template>
 
 <script>
 import PropModel from './PropModel'
 import EventModel from './EventModel'
-
-import simplebar from 'simplebar-vue'
-import 'simplebar/dist/simplebar.min.css'
+import { Card, Icon, Tabs, TabPane } from 'view-design'
 
 const tabName = {
   style: '1',
@@ -50,7 +38,10 @@ export default {
   components: {
     PropModel,
     EventModel,
-    simplebar
+    Card,
+    Icon,
+    Tabs,
+    TabPane,
   },
   props: {
     panel: {
@@ -59,10 +50,6 @@ export default {
     },
     isActive: {
       type: Boolean,
-      required: true
-    },
-    senderList: {
-      type: Array,
       required: true
     },
     eventMap: {
@@ -102,7 +89,6 @@ export default {
     font-size: 14px;
     display: flex;
     flex-direction: column;
-    background-color: #1E1E1E;
     overflow-x: hidden;
     padding-bottom: 16px;
 
@@ -113,14 +99,9 @@ export default {
   }
 
   .panel-row {
-    height: 32px;
+    height: 22px;
     display: flex;
     align-items: center;
-    padding: 8px 10px 0;
-  }
-
-  .id-row {
-    height: 22px;
   }
 
   .edit-panel-area {
@@ -128,8 +109,15 @@ export default {
   }
 
   .del-btn {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     &:hover {
-      color: #E91E63;
+      color: #ed4014;
     }
   }
 </style>

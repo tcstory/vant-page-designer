@@ -9,8 +9,6 @@ import Vue from 'vue'
 
 import { Subject } from 'rxjs'
 
-// require('spectre.css/dist/spectre-icons.min.css')
-
 const node$ = new Subject()
 
 Vue.prototype.node$ = node$
@@ -29,6 +27,9 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   min-height: 100vh;
-  min-height: 100vh;
+
+  .ivu-form-item {
+    margin-bottom: 12px;
+  }
 }
 </style>

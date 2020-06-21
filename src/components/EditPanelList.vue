@@ -3,7 +3,6 @@
     <edit-panel v-for="panel of panelList" class="edit-panel"
                 v-bind:is-active="panel.objectId === activePanel"
                 :panel="panel"
-                :senderList="senderList"
                 :event-map="eventMap"
                 :key="panel.objectId" />
   </div>
@@ -30,7 +29,6 @@ export default {
       panelList: [],
       panelMap: {},
       activePanel: -1,
-      senderList: [],
       eventMap: {},
       curTab: tabName.default
     }
@@ -46,19 +44,6 @@ export default {
     }
   },
   created () {
-    this.node$.pipe(
-      filter(action => action.type === 'action/edit_node/broadcast')
-    ).subscribe((action) => {
-      const { objectId } = action.payload
-
-      if (!this.panelMap[objectId]) {
-        this.panelList.push(action.payload)
-        this.panelMap[objectId] = action.payload
-      }
-
-      this.setActivePanel(objectId)
-    })
-
     this.node$.subscribe((action) => {
       if (action.type === 'action/delete_node/broadcast') {
         const deletedMap = keyBy(action.payload, 'objectId')
@@ -80,26 +65,15 @@ export default {
       } else if (action.type === 'UPDATE_EVENT_MAP') {
         console.log('谁出发的吗')
         // this.eventMap = action.payload
-      } else if (action.type === 'action/update_event_map_sender/broadcast') {
-        const arr = []
-        const payload = action.payload
+      } else if (action.type === 'action/edit_node/broadcast') {
+        const { objectId } = action.payload
 
-        for (const sender of Object.keys(payload)) {
-          const ret = { objectId: sender, eventTypeList: [] }
-          const eventMap = payload[sender]
-
-          for (const eventType of Object.keys(eventMap)) {
-            if (eventMap[eventType]) {
-              ret.eventTypeList.push(eventType)
-            }
-          }
-
-          if (ret.eventTypeList.length) {
-            arr.push(ret)
-          }
+        if (!this.panelMap[objectId]) {
+          this.panelList.push(action.payload)
+          this.panelMap[objectId] = action.payload
         }
-        this.senderList = arr
-        console.log('我要更新了.....', this.senderList)
+
+        this.setActivePanel(objectId)
       }
     })
   },
@@ -112,7 +86,7 @@ export default {
 <style scoped lang="scss">
   .edit-panel-list {
     height: 100%;
-    width: 280px;
+    width: 300px;
     flex-shrink: 0;
     flex-grow: 0;
     position: relative;

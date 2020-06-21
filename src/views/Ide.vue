@@ -1,33 +1,32 @@
 <template>
-  <v-app>
-    <v-app-bar app dense>
-      <v-toolbar-title>Designer</v-toolbar-title>
-      <v-spacer></v-spacer>
-      <v-btn depressed>保存</v-btn>
-      <v-btn depressed color="primary">发布</v-btn>
-    </v-app-bar>
-    <v-content>
-      <div class="stage">
-        <toolbar/>
-        <div class="iframe-wrap">
-          <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
-        </div>
-        <file-reader />
-        <edit-panel-list />
+  <div class="page">
+    <div class="page-header">
+      <div class="logo"></div>
+      <div class="btn-group">
+        <Button>保存</Button>
+        <Button type="primary">发布</Button>
       </div>
-    </v-content>
-  </v-app>
+    </div>
+    <div class="stage">
+      <toolbar/>
+      <div class="iframe-wrap">
+        <iframe src="//localhost:9000/demo.html" id="iphone" ref="receiver" frameborder="0"></iframe>
+      </div>
+      <edit-panel-list />
+    </div>
+  </div>
 </template>
 
 <script>
-import { set, isNil } from 'lodash'
+import { set, isNil, uniq, without } from 'lodash'
 import Container from '@/widgets/Container/entry'
 import vantWidget from '@/vantWidget'
 
 import Toolbar from '@/components/Toolbar'
 import EditPanelList from '@/components/EditPanelList'
 import Queue from '../queue'
-import { filter, debounceTime } from 'rxjs/operators'
+
+import { Button } from 'view-design'
 
 import 'perfect-scrollbar/dist/perfect-scrollbar.min.js'
 
@@ -38,7 +37,8 @@ export default {
   name: 'Page',
   components: {
     Toolbar,
-    EditPanelList
+    EditPanelList,
+    Button
   },
   data () {
     return {
@@ -46,6 +46,7 @@ export default {
       nodeList: [],
       selectedNode: null,
       eventMap: {},
+      senderList: [],
       scaleNum: 100
     }
   },
@@ -75,16 +76,55 @@ export default {
         set(this.eventMap, `${sender}.${eventType}`, null)
       }
 
+      for (const senderId of Object.keys(this.eventMap)) {
+        let curSender
+        let idx = -1
+
+        for (let i = 0; i < this.senderList.length; i++) {
+          if (senderId === this.senderList[i].objectId) {
+            curSender = this.senderList[i]
+            idx = i
+            break
+          }
+        }
+
+        if (!curSender) {
+          curSender = { objectId: senderId, eventTypeList: [] }
+        }
+
+        const eventMap = this.eventMap[senderId]
+
+        for (const eventType of Object.keys(eventMap)) {
+          if (eventMap[eventType]) {
+            curSender.eventTypeList = uniq(curSender.eventTypeList.concat(eventType))
+          } else {
+            curSender.eventTypeList = without(curSender.eventTypeList, eventType)
+          }
+        }
+
+        if (idx === -1) {
+          this.senderList.push(curSender)
+        }
+      }
+
+      console.log('this.eventMap', this.eventMap)
+      console.log('this.senderList', this.senderList)
+
       this.node$.next({
         type: 'action/update_event_map_sender/broadcast',
         payload: this.eventMap
+      })
+
+      this.node$.next({
+        type: 'action/update_event_sender_list/broadcast',
+        payload: this.senderList
       })
     },
     setEventReceiver (receiver, sender, eventType, key, toValue) {
       set(this.eventMap, `${sender}.${eventType}.${receiver}`, { key, value: toValue })
 
       q.sendMsg('IDE/UPDATE_EVENT_MAP', this.eventMap)
-    },
+    }
   },
   created () {
     this.initNodeMap()
@@ -143,7 +183,7 @@ export default {
         const targetNode = this.nodeMap[action.payload]
 
         if (targetNode.parent === null) {
-          return
+
         } else {
           let deletedNodes = [targetNode]
 
@@ -209,8 +249,29 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+   $page-header-height: 48px;
+
+   .page {
+     height: 100vh;
+   }
+
+  .page-header {
+    height: $page-header-height;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: white;
+    z-index: 10;
+    border-bottom: 1px solid #dcdee2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px;
+  }
 
   .stage {
+    padding-top: $page-header-height;
     display: flex;
     height: 100%;
   }

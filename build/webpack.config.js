@@ -5,7 +5,6 @@ const ProgressBarPlugin = require('progress-bar-webpack-plugin')
 const VueLoaderPlugin = require('vue-loader/lib/plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin')
 
 module.exports = {
   mode: process.env.NODE_ENV,
@@ -157,7 +156,6 @@ module.exports = {
     // }
   },
   plugins: [
-    new VuetifyLoaderPlugin(),
     new ProgressBarPlugin(),
     new VueLoaderPlugin(),
     new HtmlWebpackPlugin(

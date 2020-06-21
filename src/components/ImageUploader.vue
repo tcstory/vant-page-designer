@@ -1,39 +1,36 @@
 <template>
   <div class="image-loader">
-    <div class="form-row">
-      <span class="form-label">{{keyVal.label}}</span>
-      <div class="form-input-wrap">
-        <input class="form-input" type="text" :id="objectId" :value="src"
-               @focus="onFocus"
-               @blur="onBlur"
-               v-on:input="onInput">
-        <div class="progress-bar">
-          <v-progress-linear
-            rounded
-            v-model="progress"
-            color="primary"
-          ></v-progress-linear>
-        </div>
+    <div>
+      <div>
+        <Input type="text" :id="objectId" :value="src"
+               v-on:on-change="onInput" />
+        <Progress :percent="progress" />
       </div>
-      <v-btn color="primary upload-btn" :class="{'is-focused': isFocused}" fab dark x-small @click="onClick">
-        <v-icon>cloud_upload</v-icon>
-      </v-btn>
+      <Button :loading="uploading" shape="circle"
+              class="upload-btn"
+              @click="onClick"
+              icon="ios-cloud-upload"></Button>
 
     </div>
     <input type="file"
            :id="'upload' + objectId"
            ref="uploader"
-           style="opacity: 0;position: absolute;"
+           style="opacity: 0;position: absolute; pointer-events: none;"
            accept="image/*">
   </div>
 </template>
 
 <script>
+import { Input, Button, Progress } from 'view-design'
+
 import 'vant/lib/progress/style'
 import { upload } from '../services/upload'
 export default {
   name: 'ImageUploader',
   components: {
+    Input,
+    Button,
+    Progress
   },
   props: {
     keyVal: {
@@ -52,18 +49,10 @@ export default {
   data () {
     return {
       progress: 0,
-      isFocused: false
+      uploading: false,
     }
   },
   methods: {
-    onFocus () {
-      console.log('onFocus??')
-      this.isFocused = true
-    },
-    onBlur () {
-      console.log('onBlur??')
-      this.isFocused = false
-    },
     onClick () {
       this.$refs.uploader.click()
     },
@@ -85,7 +74,6 @@ export default {
 
         this.progress = 0
         ret.then((res) => {
-          console.log('res', res, typeof res)
           this.$emit('image-src-change', {
             target: {
               value: res.url
@@ -110,32 +98,9 @@ export default {
     width: 100%;
   }
 
-  .form-row {
-    margin-bottom: 8px;
-  }
-
-  .form-input {
-    width: 100%;
-    height: 100%;
-  }
-
-  .form-input-wrap {
-    flex-grow: 1;
-    position: relative;
-    height: 32px;
-  }
-
   .upload-btn {
-    /*flex-shrink: 0;*/
-    /*margin-left: 16px;*/
-    position: absolute;
-    right: 0;
-    transition: opacity 250ms ease-out;
-
-    &.is-focused {
-      opacity: 0.3;
-      pointer-events: none;
-    }
+    float: right;
+    margin-top: 4px;
   }
 
   .progress-bar {

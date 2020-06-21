@@ -1,99 +1,116 @@
 <template>
   <div class="event-model mb-2">
     <div class="margin-border">
-
-      <v-card class="float-panel-bottom">
-        <v-card-subtitle>触发的事件</v-card-subtitle>
-        <v-card-text class="text--primary">
-          <v-checkbox v-for="keyVal of node.eventKey" :key="keyVal.key" class="form-checkbox"
-                      :value="node.eventValue[keyVal.key]" @change="onChange($event, keyVal)"
-                      :label="keyVal.key"
-          ></v-checkbox>
-        </v-card-text>
-      </v-card>
-      <v-card class="float-panel-bottom">
-        <v-card-subtitle>响应的事件</v-card-subtitle>
-        <div class="form-row">
-          <span class="form-label">触发者</span>
-          <my-select
-            class="form-select"
+      <Form label-position="right" :label-width="100">
+        <FormItem label="触发的事件">
+          <Checkbox
+            v-for="keyVal of node.eventKey"
+            :value="node.eventValue[keyVal.key]"
+            v-on:on-change="onEmittedEventChange($event, keyVal)"
+            :key="keyVal.key"
+            >{{ keyVal.key }}</Checkbox
+          >
+        </FormItem>
+        <Divider orientation="left" size="small">响应的事件</Divider>
+        <FormItem label="触发者">
+          <Select
             :value="curSender.objectId"
-            @input="onInput($event, 'curSender')"
-            :options="senderList.map(item=>{
-              return {key: item.objectId, value: item.objectId}
-            })"
-          ></my-select>
-        </div>
-        <div class="form-row">
-          <span class="form-label">事件</span>
-          <my-select
-            class="form-select"
+            v-on:on-select="onInput($event, 'curSender')"
+          >
+            <Option
+              v-for="sender in senderList"
+              :value="sender.objectId"
+              :key="sender.objectId">
+              {{ sender.objectId }}
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="事件">
+          <Select
             :value="curEventType"
-            @input="onInput($event, 'curEventType')"
-            :options="curSender.eventTypeList.map(item=>{
-              return {key: item, value: item}
-            })"
-          ></my-select>
+            v-on:on-select="onInput($event, 'curEventType')"
+          >
+            <Option
+              v-for="item in curSender.eventTypeList"
+              :value="item"
+              :key="item">
+              {{ item }}
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="属性">
+          <Select :value="curProp" v-on:on-select="onInput($event, 'curProp')">
+            <Option
+              v-for="keyVal in propsKey"
+              :value="keyVal.key"
+              :key="keyVal.key"
+              >
+              {{ keyVal.label }}
+            </Option>
+          </Select>
+        </FormItem>
+        <FormItem label="新值">
+          <Input type="text" v-model="curValue" />
+        </FormItem>
+        <FormItem label="">
+          <Button type="primary" @click="handleAddPropItem">添加</Button>
+        </FormItem>
+      </Form>
+
+      <List border size="small">
+        <div class="event-wrap" v-for="(item, idx) in propList" :key="item.id">
+          <span class="serial-number">{{idx +1}}: </span>
+          <span class="text-label">触发者:</span>
+          <span class="text-code">{{ item.sender }}</span>,
+          <span class="text-label">事件:</span>
+          <span class="text-code">{{ item.eventType }}</span>,
+          <span class="text-label">属性:</span>
+          <span class="text-code">{{ item.key }}</span>,
+          <span class="text-label">新值:</span>
+          <span class="text-code">{{ item.toValue }}</span>
         </div>
-        <div class="form-row">
-          <span class="form-label">属性</span>
-          <my-select
-            class="form-select"
-            :value="curProp"
-            @input="onInput($event, 'curProp')"
-            :options="propsKey.map(keyVal=>{
-              return {key: keyVal.label, value: keyVal.key}
-            })"
-          ></my-select>
-        </div>
-        <div class="form-row">
-          <span class="form-label">新值</span>
-          <input
-            class="form-input"
-            type="text"
-            v-model="curValue"
-          />
-        </div>
-        <div class="form-row btn-row">
-          <v-btn small color="primary" dark @click="handleAddPropItem">添加</v-btn>
-        </div>
-      </v-card>
-      <div class="label" v-for="item in propList" :key="item.id">
-        <span class="text-label">触发者:</span><span class="text-code">{{item.sender}}</span>,
-        <span class="text-label">事件:</span><span class="text-code">{{item.eventType}}</span>,
-        <span class="text-label">属性:</span><span class="text-code">{{item.key}}</span>,
-        <span class="text-label">新值:</span><span class="text-code">{{item.toValue}}</span>
-      </div>
-      <!--      <div class="btn btn-sm" v-if="propList.length" @click="applyProps">提交修改</div>-->
-      <!--      <input class="form-input input-sm" type="text" placeholder="新值" style="width: 160px;">-->
-      <!--      <label class="btn btn-action btn-sm btn-error" @click="handleDelPropItem(idx)">-->
-      <!--        <i class="icon icon-delete"></i>-->
-      <!--      </label>-->
+      </List>
+
     </div>
   </div>
 </template>
 
 <script>
+import {
+  Form,
+  FormItem,
+  Checkbox,
+  Divider,
+  Select,
+  Option,
+  Input,
+  Button,
+  List
+} from 'view-design'
 import { uniqBy, set } from 'lodash'
-import Select from './Select'
 
 export default {
   name: 'EventModel',
   components: {
-    'my-select': Select
+    Form,
+    FormItem,
+    Checkbox,
+    Divider,
+    Select,
+    Option,
+    Input,
+    Button,
+    List
   },
   props: {
     node: {
-      type: Object,
-      required: true
-    },
-    senderList: {
       type: Object,
       required: true
     }
   },
   data () {
     return {
+      senderList: [],
       propList: [],
       styleList: [],
       curSender: {
@@ -112,20 +129,29 @@ export default {
   },
   methods: {
     onInput (ev, key) {
+      let value
+      if (ev.target) {
+        value = ev.target.value
+      } else if (ev.value) {
+        value = ev.value
+      } else {
+        value = ev
+      }
+
       if (key === 'curSender') {
         for (const sender of this.senderList) {
-          const value = ev.target.value
           if (sender.objectId === value) {
             this.curSender = sender
+            console.log('curSender.eventTypeList', this.curSender.eventTypeList)
           }
         }
       } else if (key === 'curEventType') {
-        this.curEventType = ev.target.value
+        this.curEventType = value
       } else if (key === 'curProp') {
-        this.curProp = ev.target.value
+        this.curProp = value
       }
     },
-    onChange (value, keyVal) {
+    onEmittedEventChange (value, keyVal) {
       this.node$.next({
         type: 'action/set_event_map_sender/request',
         payload: {
@@ -181,46 +207,28 @@ export default {
     applyProps () {
       this.propList = uniqBy(this.propList, 'eventType')
     }
+  },
+  created () {
+    this.node$.subscribe((action) => {
+      if (action.type === 'action/update_event_sender_list/broadcast') {
+        this.senderList = action.payload
+      }
+    })
   }
 }
 </script>
 
 <style scoped lang="scss">
-  .title-bar {
-    font-size: 14px;
-    height: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #2a2d35;
-  }
 
-  .title {
-    font-size: 13px;
-  }
+.event-wrap {
+  padding: 6px;
+}
+.text-label {
+  display: inline-block;
+  padding: 0 4px;
+}
 
-  .v-card__subtitle, .v-card__text {
-    padding-left: 0;
-  }
-
-  .btn-row {
-    display: flex;
-    justify-content: flex-end;
-  }
-
-  .form-select {
-    width: 180px;
-    height: 24px;
-    display: inline-block;
-  }
-
-  .text-label {
-    color: rgba(255, 255, 255, 0.7);
-    display: inline-block;
-    padding: 0 4px;
-  }
-
-  .text-code {
-    color: #4CAF50;
-  }
+.text-code {
+  color: #2db7f5;
+}
 </style>

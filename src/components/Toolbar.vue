@@ -1,58 +1,51 @@
 <template>
   <div class="tool">
-    <v-card class="float-panel-top">
-      <v-tabs
-        :centered="true"
-        v-model="curTab"
-        dark
-      >
-        <v-tab :key="tabName.default">基础组件</v-tab>
-        <v-tab :key="tabName.business">业务组件</v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="curTab">
-        <v-tab-item :key="tabName.default">
-          <v-list dense>
-            <v-list-item-group v-model="item" color="primary">
-              <v-list-item
-                @click="handleAddVantWidget(comp)"
-                v-for="comp in vantComponentList"
-                :key="comp.objectId"
-              >
-                <v-list-item-content>
-                  <v-list-item-title>
-                    {{`${comp.name} ${comp.label}`}}
-                  </v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
-
-        </v-tab-item>
-        <v-tab-item :key="tabName.business">
-        </v-tab-item>
-      </v-tabs-items>
-    </v-card>
-    <v-card class="float-panel-bottom">
-      <v-card-subtitle >组件树</v-card-subtitle>
-      <node-tree />
-    </v-card>
+    <div class="float-panel-top">
+      <Tabs>
+        <TabPane label="基础组件" :name="tabName.default" :key="tabName.default">
+          <List border size="small">
+            <div @click="handleAddVantWidget(comp)" v-for="comp in vantComponentList"
+                 :key="comp.objectId">
+              <ListItem class="list-item">
+                {{`${comp.name} ${comp.label}`}}
+              </ListItem>
+            </div>
+          </List>
+        </TabPane>
+        <TabPane label="业务组件" :name="tabName.business" :key="tabName.business"></TabPane>
+      </Tabs>
+    </div>
+    <div class="float-panel-bottom">
+      <Tabs>
+        <TabPane label="组件树" :name="tabName.nodeTree">
+          <node-tree/>
+        </TabPane>
+      </Tabs>
+    </div>
   </div>
 </template>
 
 <script>
+import { Tabs, TabPane, List } from 'view-design'
+
 import vantWidget from '../vantWidget'
 
 import NodeTree from './NodeTree'
 
 const tabName = {
   default: '1',
-  business: '2'
+  business: '2',
+  nodeTree: '3'
 }
 
 export default {
   name: 'Toolbar',
   components: {
-    NodeTree
+    NodeTree,
+    Tabs,
+    TabPane,
+    List,
+    ListItem: List.Item
   },
   data () {
     return {
@@ -96,8 +89,10 @@ export default {
 <style scoped lang="scss">
   .tool {
     height: 100%;
-    width: 240px;
+    width: 280px;
     position: relative;
+    border-right: 1px solid #dcdee2;
+    padding: 0 4px;
   }
 
   .float-panel-top, .float-panel-bottom {
@@ -115,5 +110,13 @@ export default {
   .float-panel-bottom {
     display: flex;
     flex-direction: column;
+  }
+
+  .list-item {
+    cursor: pointer;
+
+    &:hover {
+      background-color: #f8f8f9;
+    }
   }
 </style>

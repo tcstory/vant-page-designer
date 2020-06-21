@@ -1,16 +1,11 @@
 <script type="text/jsx">
 import { filter } from 'rxjs/operators'
-import { VIcon, VBtn } from 'vuetify/lib'
-
-import simplebar from 'simplebar-vue'
-import 'simplebar/dist/simplebar.min.css'
+import { Icon } from 'view-design'
 
 export default {
   name: 'NodeTree',
   components: {
-    'v-icon': VIcon,
-    'v-btn': VBtn,
-    simplebar
+    Icon,
   },
   data () {
     return {
@@ -40,10 +35,10 @@ export default {
 
       if (item.parent !== null) {
         delBtn = (
-          <v-btn icon small class="del-btn"
+          <div class="del-btn"
             vOn:click_stop_prevent={this.handleDelete.bind(this, item)}>
-            <v-icon medium>delete</v-icon>
-          </v-btn>
+            <Icon type="md-trash" />
+          </div>
         )
       }
 
@@ -52,7 +47,7 @@ export default {
           <div class={{ content: true, 'is-selected': item.objectId === this.selectedNodeId }}
             onClick={this.onClick.bind(this, item)}>
             {
-              item.children ? (<v-icon medium>folder</v-icon>) : (<v-icon medium>crop_square</v-icon>)
+              item.children ? (<Icon type="ios-folder" />) : (<Icon type="ios-egg" />)
             }
             <div class="action-content">
               {item.name}
@@ -87,11 +82,6 @@ export default {
       })
     )
   },
-  mounted () {
-    const { width, height } = window.getComputedStyle(this.$refs.nodeTree.$el, null)
-    this.$refs.nodeTree.$el.style.width = width
-    this.$refs.nodeTree.$el.style.height = height
-  },
   beforeDestroy () {
     this.subscriptions.forEach((item) => {
       item.unsubscribe()
@@ -99,13 +89,11 @@ export default {
   },
   render: function (h) {
     return (
-      <simplebar data-simplebar-auto-hide="false" class="wrap" ref="nodeTree">
-        <div className="node-tree p-1">
-          {
-            this.createItem(this.myNode, 0)
-          }
-        </div>
-      </simplebar>
+      <div className="node-tree p-1">
+        {
+          this.createItem(this.myNode, 0)
+        }
+      </div>
     )
   }
 }
@@ -149,8 +137,15 @@ export default {
   }
 
   .del-btn {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
     &:hover {
-      color: #E91E63;
+      color: #ed4014;
     }
   }
 </style>

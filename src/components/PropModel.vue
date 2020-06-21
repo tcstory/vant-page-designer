@@ -1,57 +1,56 @@
 <template>
-  <div class="box-model mb-2">
+  <div class="box-model">
     <template v-if="show && node.parent">
-      <div class="form-row" v-for="keyVal of node.propsKey" :key="keyVal.key">
-        <template v-if="keyVal.type === 'string'">
-          <span class="form-label">{{ keyVal.label }}</span>
-          <input
-            class="form-input"
-            type="text"
-            :value="node.propsValue[keyVal.key]"
-            v-on:input="onInput($event, keyVal)"
-          />
-        </template>
-        <template v-if="keyVal.type === 'number'">
-          <span class="form-label">{{ keyVal.label }}</span>
-          <input
-            class="form-input"
-            type="number"
-            :value="node.propsValue[keyVal.key]"
-            v-on:input="onInput($event, keyVal)"
-          />
-        </template>
-        <template v-if="keyVal.type === 'select'">
-          <span class="form-label">{{ keyVal.label }}</span>
-          <div class="form-select">
-            <my-select
+      <Form label-position="right" :label-width="100">
+        <FormItem :label="keyVal.label" v-for="keyVal of node.propsKey" :key="keyVal.key">
+          <template v-if="keyVal.type === 'string'">
+            <Input
+              type="text"
               :value="node.propsValue[keyVal.key]"
-              @input="onInput($event, keyVal)"
-              :options="keyVal.options"
-            ></my-select>
-          </div>
-        </template>
-        <template v-if="keyVal.type === 'image'">
-          <image-uploader
-            :src="node.propsValue[keyVal.key]"
-            :object-id="node.objectId"
-            :key-val="keyVal"
-            v-on:image-src-change="onInput($event, keyVal)"
-          />
-        </template>
-      </div>
+              v-on:on-change="onInput($event, keyVal)"
+            />
+          </template>
+          <template v-if="keyVal.type === 'number'">
+            <Input
+              class="form-input"
+              type="number"
+              :value="node.propsValue[keyVal.key]"
+              v-on:on-change="onInput($event, keyVal)"
+            />
+          </template>
+          <template v-if="keyVal.type === 'select'">
+            <Select :value="node.propsValue[keyVal.key]" v-on:on-change="onInput($event, keyVal)">
+              <Option v-for="op in keyVal.options" :value="op.value" :key="op.value">{{ op.key }}</Option>
+            </Select>
+          </template>
+          <template v-if="keyVal.type === 'image'">
+            <image-uploader
+              :src="node.propsValue[keyVal.key]"
+              :object-id="node.objectId"
+              :key-val="keyVal"
+              v-on:image-src-change="onInput($event, keyVal)"
+            />
+          </template>
+        </FormItem>
+      </Form>
     </template>
   </div>
 </template>
 
 <script>
+import { Input, Form, FormItem, Select, Option } from 'view-design'
+
 import ImageUploader from './ImageUploader'
-import Select from './Select'
 
 export default {
   name: 'PropModel',
   components: {
     ImageUploader,
-    'my-select': Select
+    Input,
+    Form,
+    FormItem,
+    Select,
+    Option
   },
   props: {
     node: {
@@ -65,11 +64,14 @@ export default {
     }
   },
   methods: {
-    handleClick () {
-      this.show = !this.show
-    },
     onInput (ev, keyVal) {
-      let value = ev.target.value
+      let value
+
+      if (ev.target) {
+        value = ev.target.value
+      } else {
+        value = ev
+      }
 
       if (keyVal.type === 'number') {
         value = Number(value)
@@ -90,44 +92,5 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.title-bar {
-  font-size: 14px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background-color: #2a2d35;
-}
-</style>
 
-<style>
-  .form-row {
-    margin-bottom: 4px;
-    min-height: 24px;
-    display: flex;
-    justify-content: space-between;
-  }
-
-  .form-label {
-    color: rgba(255, 255, 255, 0.7);
-    width: 60px;
-    display: inline-block;
-  }
-
-  .form-input,
-  .form-select {
-    width: 180px;
-    padding: 0 6px;
-    background-color: rgba(255, 255, 255, 0.08);
-    display: inline-block;
-  }
-
-  .form-select {
-    padding: 0;
-  }
-
-  .form-checkbox {
-    height: 24px;
-    margin-top: 0;
-  }
 </style>
