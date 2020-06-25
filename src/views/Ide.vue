@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import { set, isNil, uniq, without } from 'lodash'
+import { set, isNil, uniq, without, remove } from 'lodash'
 import Container from '@/widgets/Container/entry'
 import vantWidget from '@/vantWidget'
 
@@ -105,10 +105,12 @@ export default {
         if (idx === -1) {
           this.senderList.push(curSender)
         }
-      }
 
-      console.log('this.eventMap', this.eventMap)
-      console.log('this.senderList', this.senderList)
+        if (curSender.eventTypeList.length === 0) {
+          delete this.eventMap[curSender.objectId]
+          this.senderList.splice(idx, 1)
+        }
+      }
 
       this.node$.next({
         type: 'action/update_event_map_sender/broadcast',
@@ -201,6 +203,21 @@ export default {
           }
           q.sendMsg('msg/delete_node/order', action.payload)
           this.node$.next({ type: 'action/delete_node/broadcast', payload: deletedNodes })
+
+          delete this.eventMap[targetNode.objectId]
+          remove(this.senderList, function (item) {
+            return item.objectId === targetNode.objectId
+          })
+
+          this.node$.next({
+            type: 'action/update_event_map_sender/broadcast',
+            payload: this.eventMap
+          })
+
+          this.node$.next({
+            type: 'action/update_event_sender_list/broadcast',
+            payload: this.senderList
+          })
         }
       } else if (action.type === 'action/edit_node/request') {
         this.selectedNode = this.nodeMap[action.payload.objectId]

@@ -58,7 +58,7 @@
       </Form>
 
       <List border size="small">
-        <div class="event-wrap" v-for="(item, idx) in propList" :key="item.id">
+        <div class="event-wrap" v-for="(item, idx) in eventList" :key="item.id">
           <span class="serial-number">{{idx +1}}: </span>
           <span class="text-label">触发者:</span>
           <span class="text-code">{{ item.sender }}</span>,
@@ -68,6 +68,14 @@
           <span class="text-code">{{ item.key }}</span>,
           <span class="text-label">新值:</span>
           <span class="text-code">{{ item.toValue }}</span>
+          <div class="action">
+            <div class="status-text" :class="{'deleted': item.status === statusMap.deleted}">
+              <span>{{item.statusText}}</span>
+              <div @click="handleDelEvent(idx)" class="del-btn">
+                <Icon type="md-trash" />
+              </div>
+            </div>
+          </div>
         </div>
       </List>
 
@@ -85,9 +93,15 @@ import {
   Option,
   Input,
   Button,
-  List
+  List,
+  Icon
 } from 'view-design'
 import { uniqBy, set } from 'lodash'
+
+const statusMap = {
+  normal: 1,
+  deleted: 2
+}
 
 export default {
   name: 'EventModel',
@@ -100,7 +114,8 @@ export default {
     Option,
     Input,
     Button,
-    List
+    List,
+    Icon
   },
   props: {
     node: {
@@ -111,7 +126,7 @@ export default {
   data () {
     return {
       senderList: [],
-      propList: [],
+      eventList: [],
       styleList: [],
       curSender: {
         objectId: '',
@@ -125,6 +140,9 @@ export default {
   computed: {
     propsKey () {
       return this.node.propsKey
+    },
+    statusMap () {
+      return statusMap
     }
   },
   methods: {
@@ -142,7 +160,6 @@ export default {
         for (const sender of this.senderList) {
           if (sender.objectId === value) {
             this.curSender = sender
-            console.log('curSender.eventTypeList', this.curSender.eventTypeList)
           }
         }
       } else if (key === 'curEventType') {
@@ -171,12 +188,14 @@ export default {
       })
     },
     handleAddPropItem () {
-      this.propList.push({
+      this.eventList.push({
         id: Math.random(),
         eventType: this.curEventType,
         key: this.curProp,
         toValue: this.curValue,
-        sender: this.curSender.objectId
+        sender: this.curSender.objectId,
+        status: statusMap.normal,
+        statusText: ''
       })
 
       this.node$.next({
@@ -201,17 +220,33 @@ export default {
         eventTypeList: []
       }
     },
-    handleDelPropItem (idx) {
-      this.propList.splice(idx, 1)
-    },
-    applyProps () {
-      this.propList = uniqBy(this.propList, 'eventType')
+    handleDelEvent (idx) {
+      this.eventList.splice(idx, 1)
     }
   },
   created () {
     this.node$.subscribe((action) => {
       if (action.type === 'action/update_event_sender_list/broadcast') {
         this.senderList = action.payload
+      } else if (action.type === 'action/update_event_map_sender/broadcast') {
+        console.log('action.payload', action.payload)
+        console.log('this.eventList', this.eventList)
+
+        const eventMap = action.payload
+        for (const item of this.eventList) {
+          const sender = item.sender
+
+          if (!eventMap[sender]) {
+            item.status = statusMap.deleted
+            item.statusText = '事件已经被删除'
+          } else if (!eventMap[sender][item.eventType]) {
+            item.statusText = '事件已经被删除'
+            item.status = statusMap.deleted
+          } else {
+            item.status = statusMap.normal
+            item.statusText = ''
+          }
+        }
       }
     })
   }
@@ -222,7 +257,13 @@ export default {
 
 .event-wrap {
   padding: 6px;
+  border-bottom: 1px solid #dcdee2;
+
+  &:last-of-type {
+    border-bottom: none;
+  }
 }
+
 .text-label {
   display: inline-block;
   padding: 0 4px;
@@ -230,5 +271,27 @@ export default {
 
 .text-code {
   color: #2db7f5;
+}
+
+.status-text {
+  font-size: 13px;
+  height: 24px;
+  line-height: 24px;
+
+  background-color: #e8eaec;
+  &.deleted {
+    background-color: #ed4014;
+    color: white;
+  }
+}
+
+.del-btn {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  float: right;
 }
 </style>
